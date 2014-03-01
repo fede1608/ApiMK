@@ -1610,6 +1610,33 @@ class MyBBIntegrator
 		
 		return $arr;
 	}
+    function getPrivateMessage($pmid)
+    {
+        $arr = array();
+		
+		
+		
+		// Run the Query for Private Messages
+		$query = $this->db->query('
+			SELECT pm.*, fu.username AS fromusername, tu.username as tousername
+			FROM '.TABLE_PREFIX.'privatemessages pm
+			LEFT JOIN '.TABLE_PREFIX.'users fu ON (fu.uid=pm.fromid)
+			LEFT JOIN '.TABLE_PREFIX.'users tu ON (tu.uid=pm.toid)
+			WHERE pm.pmid = '.intval($pmid).'
+		');
+		
+		// Do we have messages?
+		if ($this->db->num_rows($query) > 0)
+		{
+			// Uhh, let's iterate the messages!
+			while ($message = $this->db->fetch_array($query))
+			{
+					$arr[] = $message;
+			}
+		}
+		
+		return $arr;
+    }
 	
 	/**
 	 * Read the messages from database of a user
@@ -1846,6 +1873,16 @@ class MyBBIntegrator
 		');
         $user = $this->db->fetch_array($query);
         return $user['uid'];
+	}
+    function getUsername($userid=1)
+	{
+		$query = $this->db->query('
+			SELECT u.`username`
+			FROM '.TABLE_PREFIX.'users u 
+			WHERE u.`uid` = "'.$userid.'"
+		');
+        $user = $this->db->fetch_array($query);
+        return $user['username'];
 	}
 	
 	/**
