@@ -1884,7 +1884,41 @@ class MyBBIntegrator
         $user = $this->db->fetch_array($query);
         return $user['username'];
 	}
-	
+	function claimCoin($username='')
+	{
+        if ($username=='')
+            return 0;
+            
+		$query = $this->db->query('
+			SELECT COUNT(*) as cant, u.last_coin_claim_date as date
+			FROM '.TABLE_PREFIX.'users u 
+			WHERE u.`username` = "'.$username.'" 
+            AND u.last_coin_claim_date+(3600*24)>'.time().'
+            GROUP BY u.last_coin_claim_date
+		');
+        $user = $this->db->fetch_array($query);
+        
+        if($user['cant']==1)
+            return (3600*24)-(time()-$user['date']);
+            
+        $query = $this->db->query('
+			SELECT COUNT(*) as cant
+			FROM '.TABLE_PREFIX.'users u 
+			WHERE u.`username` = "'.$username.'" 
+            AND u.money >50
+            
+		');
+        $user = $this->db->fetch_array($query);
+        if($user['cant']==1)
+            return -1;
+            
+        $query = $this->db->query('
+			UPDATE '.TABLE_PREFIX.'users u
+            SET money=money+1, last_coin_claim_date='.time().'
+			WHERE u.`username` = "'.$username.'"             
+		');
+        return 1;
+	}
 	/**
 	 * Fetch the users being online
 	 * Refers to: index.php
