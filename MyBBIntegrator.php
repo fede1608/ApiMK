@@ -1871,6 +1871,17 @@ class MyBBIntegrator
 		}
 	}
     
+    function getMoney($username='')
+	{
+		$query = $this->db->query('
+			SELECT u.`money`
+			FROM '.TABLE_PREFIX.'users u 
+			WHERE u.`username` = "'.$username.'"
+		');
+        $user = $this->db->fetch_array($query);
+        return $user['money'];
+	}
+    
     function getUserId($username='')
 	{
 		$query = $this->db->query('
