@@ -1616,7 +1616,7 @@ class MyBBIntegrator
 		
 		
 		
-		// Run the Query for Private Messages
+		// Run the Query for the Private Message
 		$query = $this->db->query('
 			SELECT pm.*, fu.username AS fromusername, tu.username as tousername
 			FROM '.TABLE_PREFIX.'privatemessages pm
@@ -1635,6 +1635,13 @@ class MyBBIntegrator
 			}
 		}
 		
+        // Update Read flag
+		$query = $this->db->query('
+			UPDATE '.TABLE_PREFIX.'privatemessages pm
+            SET pm.status=1
+			WHERE pm.pmid = '.intval($arr[0]['pmid']).' AND pm.status=0
+		');
+        
 		return $arr;
     }
 	
@@ -2167,7 +2174,7 @@ class MyBBIntegrator
 	
     
     
-    function checkUserPass($user,$pass){
+    function checkUserPass($user,$pass64){
    	    require_once MYBB_ROOT.'inc/functions_user.php';
 
 		// If the username does not exist, login fails
@@ -2175,6 +2182,7 @@ class MyBBIntegrator
 		{
 			return false;
 		}
+        $pass=base64_decode(iconv("UTF-8","CP1252",$pass64));
 		// Let's call the handy MyBB validation function and see if we find a user
 		$user2 = validate_password_from_username($user, $pass);
 		if (!$user2['uid'])
