@@ -3176,7 +3176,7 @@ class MyBBIntegrator
 		
 		$this->lang->load('private');
 		
-		$this->plugins->run_hooks('private_send_do_send');
+		//$this->plugins->run_hooks('private_send_do_send');
 		
 		// Attempt to see if this PM is a duplicate or not
 		$time_cutoff = TIME_NOW - (5 * 60 * 60);
@@ -3229,7 +3229,7 @@ class MyBBIntegrator
 		else
 		{
 			$pminfo = $pmhandler->insert_pm();
-			$this->plugins->run_hooks("private_do_send_end");
+			//$this->plugins->run_hooks("private_do_send_end");
 	
 			if (isset($pminfo['draftsaved']))
 			{
