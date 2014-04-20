@@ -1,263 +1,303 @@
 <?php
 //coded mostly by fede1608 (around 88%)
-    function getId($name){
-    	global $users,$MySQL;
-    	foreach($users as $user){
-    		if (strtolower($user['name'])==strtolower($name)) return $user['id'];
-    	}
-        
-        $MySQL->execute("INSERT INTO inventorysql.`inventorysql_users`(`name`, `password`) VALUES (\"".$name."\",\"\")");
-        $users = $MySQL->execute("SELECT `id`, `name` FROM inventorysql.`inventorysql_users`");
-    	foreach($users as $user){
-    			if (strtolower($user['name'])==strtolower($name)) return $user['id'];
-    	}
-        return -1;
-	}
-	
-	function getItemId($name){
-		global $items;
-		foreach($items as $id[0] => $item){
-			foreach($item as $id[1] => $subitem){
-			if($subitem == $name)return $id;
-		
-			}	
-		}
-	}
-	
-	function getIdData($all){
-	preg_match("/([0-9]{1,4}):([0-9]{1,5})/", $all, $matches);
-	return $matches;
-	}
-	
-	function isBreakable($id){
-		switch(true) {
-		case (($id>=256)&&($id<=259)):return true;
-		case ($id == 261):
-		case (($id>=267)&&($id<=279)):
-		case (($id>=283)&&($id<=286)):
-		case (($id>=290)&&($id<=294)):
-		case (($id>=298)&&($id<=317)): return true;
-		default: return false;
-		}
-		}
-		
-	function addEnchantment($uuid,$eid,$level){
-		$archivo2=fopen("Logs/WebShopDebugLogs.txt","a");
-		fputs($archivo2,"----AddEnchantment----\n");
-		global $MySQL,$enchant,$tableenchantments;
-		$enchants = $MySQL->execute("SELECT *  FROM `".$tableenchantments."` WHERE `id` = \"".$uuid."\"");
-		$add = $MySQL->execute("INSERT INTO `". $tableenchantments ."`(`id`, `ench_index`, `ench`, `level`, `is_backup`) VALUES (\"".$uuid."\", ".getEnchantIndex($enchants).",".$eid.",".$level.",0);");
-		fputs($archivo2, date(DATE_RFC822)." INSERT INTO `". $tableenchantments ."`(`id`, `ench_index`, `ench`, `level`, `is_backup`) VALUES (\"".$uuid."\", ".getEnchantIndex($enchants).",".$eid.",".$level.",0);\n");
-		fputs($archivo2,$add);
-		fputs($archivo2,"\n");
-		fclose($archivo2);
-		//if($add) echo 'Added Enchantment or whatever, I\' m just an echo';
-		//else echo 'error SQL';
-	}
-		
-		function getEnchantIndex($enc){
-		if($enc == false) return 0;
-		if(isset($enc[2])) return 3;
-		if(isset($enc[1])) return 2;
-		if(isset($enc[0])) return 1;
-		
-		
-		
-		//si hay 4 hechizos reemplaza el ultimo
-		if(isset($enc[3])) return 3;
-		}
-		
-		function addItem($uuid,$name,$itemid,$itemdata,$amount) {
-		$archivo2=fopen("Logs/WebShopDebugLogs.txt","a");
-		fputs($archivo2,"----AddItem----\n");
-			global $MySQL,$tablependings;					
-			$give = $MySQL->execute("INSERT INTO `". $tablependings ."`(`id`, `owner`, `world`, `item`, `data`, `damage`, `count`) VALUES (\"".$uuid."\", '".getID($name)."', '', '". $itemid ."', '".$itemdata."', '0', '". $amount ."');");
-		fputs($archivo2, date(DATE_RFC822)." INSERT INTO `". $tablependings ."`(`id`, `owner`, `world`, `item`, `data`, `damage`, `count`) VALUES (\"".$uuid."\", '".getID($name)."', '', '". $itemid ."', '".$itemdata."', '0', '". $amount ."');\n");
-		fputs($archivo2,$give);
-		fputs($archivo2,"\n");
-		fclose($archivo2);
-		// if($give) echo 'Added item or whatever, I\' m just an echo';
-		// else echo 'error SQL';
-		}
-		function addMeta($uuid,$key,$value) {
-		$archivo2=fopen("Logs/WebShopDebugLogs.txt","a");
-		fputs($archivo2,"----AddMeta----\n");
-			global $MySQL,$tablependings;					
-			$give = $MySQL->execute("INSERT INTO `inventorysql_meta`(`id`, `key`, `value`, `is_backup`) VALUES (\"".$uuid."\", '".$key."',\"".$value."\", '0');");
-		fputs($archivo2, date(DATE_RFC822)." INSERT INTO `inventorysql_meta`(`id`, `key`, `value`, `is_backup`) VALUES (\"".$uuid."\", '".$key."',\"".$value."\", '0');\n");
-		fputs($archivo2,$give);
-		fputs($archivo2,"\n");
-		fclose($archivo2);
-			// echo "INSERT INTO `inventorysql_meta`(`id`, `key`, `value`, `is_backup`) VALUES (\"".$uuid."\", '".$key."',\"".$value."\", '0');";
-		//if($give) echo 'Added item or whatever, I\' m just an echo';
-		//else echo 'error SQL';
-		}
-		function addPotion($uuid,$name,$itemid,$itemdata,$amount) {
-			global $MySQL,$tablependings;					
-			$give = $MySQL->execute("INSERT INTO `". $tablependings ."`(`id`, `owner`, `world`, `item`, `data`, `damage`, `count`) VALUES (\"".$uuid."\", '".getID($name)."', '', '". $itemid ."', '5', '".$itemdata."', '". $amount ."');");
-		//if($give) echo 'Added item or whatever, I\' m just an echo';
-		//else echo 'error SQL';
-		}
-		function addEgg($uuid,$name,$itemid,$itemdata,$amount) {
-			global $MySQL,$tablependings;					
-			$give = $MySQL->execute("INSERT INTO `". $tablependings ."`(`id`, `owner`, `world`, `item`, `data`, `damage`, `count`) VALUES (\"".$uuid."\", '".getID($name)."', '', '". $itemid ."', '".$itemdata."', '".$itemdata."', '". $amount ."');");
-		//if($give) echo 'Added item or whatever, I\' m just an echo';
-		//else echo 'error SQL';
-		}
-	function gen_uuid() {
-    return sprintf( '%04x%04x-%04x-%04x-%04x-%04x%04x%04x',
-        // 32 bits for "time_low"
-        mt_rand( 0, 0xffff ), mt_rand( 0, 0xffff ),
+function getId($name)
+{
+    global $users, $MySQL;
+    foreach ($users as $user) {
+        if (strtolower($user['name']) == strtolower($name))
+            return $user['id'];
+    }
 
-        // 16 bits for "time_mid"
-        mt_rand( 0, 0xffff ),
+    $MySQL->execute("INSERT INTO inventorysql.`inventorysql_users`(`name`, `password`) VALUES (\"" .
+        $name . "\",\"\")");
+     
+    $users = $MySQL->execute("SELECT `id`, `name` FROM inventorysql.`inventorysql_users`");
+     
+    foreach ($users as $user) {
+        if (strtolower($user['name']) == strtolower($name))
+            return $user['id'];
+    }
+    return - 1;
+}
 
-        // 16 bits for "time_hi_and_version",
+function getItemId($name)
+{
+    global $items;
+    foreach ($items as $id[0] => $item) {
+        foreach ($item as $id[1] => $subitem) {
+            if ($subitem == $name)
+                return $id;
+
+        }
+    }
+}
+
+function getIdData($all)
+{
+    preg_match("/([0-9]{1,4}):([0-9]{1,5})/", $all, $matches);
+    return $matches;
+}
+
+function isBreakable($id)
+{
+    switch (true) {
+        case (($id >= 256) && ($id <= 259)):
+            return true;
+        case ($id == 261):
+        case (($id >= 267) && ($id <= 279)):
+        case (($id >= 283) && ($id <= 286)):
+        case (($id >= 290) && ($id <= 294)):
+        case (($id >= 298) && ($id <= 317)):
+            return true;
+        default:
+            return false;
+    }
+}
+
+function addEnchantment($uuid, $eid, $level)
+{
+    $archivo2 = fopen("Logs/WebShopDebugLogs.txt", "a");
+    fputs($archivo2, "----AddEnchantment----\n");
+    global $MySQL, $enchant, $tableenchantments;
+    $enchants = $MySQL->execute("SELECT *  FROM inventorysql.`" . $tableenchantments .
+        "` WHERE `id` = \"" . $uuid . "\"");
+     
+    $add = $MySQL->execute("INSERT INTO inventorysql.`" . $tableenchantments .
+        "`(`id`, `ench_index`, `ench`, `level`, `is_backup`) VALUES (\"" . $uuid . "\", " .
+        getEnchantIndex($enchants) . "," . $eid . "," . $level . ",0);");
+     
+    fputs($archivo2, date(DATE_RFC822) . " INSERT INTO inventorysql.`" . $tableenchantments .
+        "`(`id`, `ench_index`, `ench`, `level`, `is_backup`) VALUES (\"" . $uuid . "\", " .
+        getEnchantIndex($enchants) . "," . $eid . "," . $level . ",0);\n");
+    fputs($archivo2, $add);
+    fputs($archivo2, "\n");
+    fclose($archivo2);
+    //if($add) echo 'Added Enchantment or whatever, I\' m just an echo';
+    //else echo 'error SQL';
+}
+
+function getEnchantIndex($enc)
+{
+    if ($enc == false)
+        return 0;
+    if (isset($enc[2]))
+        return 3;
+    if (isset($enc[1]))
+        return 2;
+    if (isset($enc[0]))
+        return 1;
+
+
+    //si hay 4 hechizos reemplaza el ultimo
+    if (isset($enc[3]))
+        return 3;
+}
+
+function addItem($uuid, $name, $itemid, $itemdata, $amount)
+{
+    $archivo2 = fopen("Logs/WebShopDebugLogs.txt", "a");
+    fputs($archivo2, "----AddItem----\n");
+    global $MySQL, $tablependings;
+    $give = $MySQL->execute("INSERT INTO inventorysql.`" . $tablependings .
+        "`(`id`, `owner`, `world`, `item`, `data`, `damage`, `count`) VALUES (\"" . $uuid .
+        "\", '" . getID($name) . "', '', '" . $itemid . "', '" . $itemdata . "', '0', '" .
+        $amount . "');");
+     
+    fputs($archivo2, date(DATE_RFC822) . " INSERT INTO inventorysql.`" . $tablependings .
+        "`(`id`, `owner`, `world`, `item`, `data`, `damage`, `count`) VALUES (\"" . $uuid .
+        "\", '" . getID($name) . "', '', '" . $itemid . "', '" . $itemdata . "', '0', '" .
+        $amount . "');\n");
+    fputs($archivo2, $give);
+    fputs($archivo2, "\n");
+    fclose($archivo2);
+    // if($give) echo 'Added item or whatever, I\' m just an echo';
+    // else echo 'error SQL';
+}
+function addMeta($uuid, $key, $value)
+{
+    $archivo2 = fopen("Logs/WebShopDebugLogs.txt", "a");
+    fputs($archivo2, "----AddMeta----\n");
+    global $MySQL, $tablependings;
+    $give = $MySQL->execute("INSERT INTO inventorysql.`inventorysql_meta`(`id`, `key`, `value`, `is_backup`) VALUES (\"" .
+        $uuid . "\", '" . $key . "',\"" . $value . "\", '0');");
+         
+    fputs($archivo2, date(DATE_RFC822) .
+        " INSERT INTO inventorysql.`inventorysql_meta`(`id`, `key`, `value`, `is_backup`) VALUES (\"" .
+        $uuid . "\", '" . $key . "',\"" . $value . "\", '0');\n");
+    fputs($archivo2, $give);
+    fputs($archivo2, "\n");
+    fclose($archivo2);
+    // echo "INSERT INTO `inventorysql_meta`(`id`, `key`, `value`, `is_backup`) VALUES (\"".$uuid."\", '".$key."',\"".$value."\", '0');";
+    //if($give) echo 'Added item or whatever, I\' m just an echo';
+    //else echo 'error SQL';
+}
+function addPotion($uuid, $name, $itemid, $itemdata, $amount)
+{
+    global $MySQL, $tablependings;
+    $give = $MySQL->execute("INSERT INTO inventorysql.`" . $tablependings .
+        "`(`id`, `owner`, `world`, `item`, `data`, `damage`, `count`) VALUES (\"" . $uuid .
+        "\", '" . getID($name) . "', '', '" . $itemid . "', '5', '" . $itemdata . "', '" .
+        $amount . "');");
+         
+    //if($give) echo 'Added item or whatever, I\' m just an echo';
+    //else echo 'error SQL';
+}
+function addEgg($uuid, $name, $itemid, $itemdata, $amount)
+{
+    global $MySQL, $tablependings;
+    $give = $MySQL->execute("INSERT INTO inventorysql.`" . $tablependings .
+        "`(`id`, `owner`, `world`, `item`, `data`, `damage`, `count`) VALUES (\"" . $uuid .
+        "\", '" . getID($name) . "', '', '" . $itemid . "', '" . $itemdata . "', '" . $itemdata .
+        "', '" . $amount . "');");
+         
+    //if($give) echo 'Added item or whatever, I\' m just an echo';
+    //else echo 'error SQL';
+}
+function gen_uuid()
+{
+    return sprintf('%04x%04x-%04x-%04x-%04x-%04x%04x%04x', // 32 bits for "time_low"
+        mt_rand(0, 0xffff), mt_rand(0, 0xffff), // 16 bits for "time_mid"
+        mt_rand(0, 0xffff), // 16 bits for "time_hi_and_version",
         // four most significant bits holds version number 4
-        mt_rand( 0, 0x0fff ) | 0x4000,
-
-        // 16 bits, 8 bits for "clk_seq_hi_res",
+    mt_rand(0, 0x0fff) | 0x4000, // 16 bits, 8 bits for "clk_seq_hi_res",
         // 8 bits for "clk_seq_low",
-        // two most significant bits holds zero and one for variant DCE1.1
-        mt_rand( 0, 0x3fff ) | 0x8000,
+    // two most significant bits holds zero and one for variant DCE1.1
+    mt_rand(0, 0x3fff) | 0x8000, // 48 bits for "node"
+        mt_rand(0, 0xffff), mt_rand(0, 0xffff), mt_rand(0, 0xffff));
+}
 
-        // 48 bits for "node"
-        mt_rand( 0, 0xffff ), mt_rand( 0, 0xffff ), mt_rand( 0, 0xffff )
-    );
-	}
-	
 
-function MineToWeb($minetext){
+function MineToWeb($minetext)
+{
     //$minetext=str_replace("\u00a7","§",$minetext);
-    $minetext=utf8_decode($minetext);
+    $minetext = utf8_decode($minetext);
     preg_match_all("/[^§&]*[^§&]|[§&][0-9a-z][^§&]*/", $minetext, $brokenupstrings);
     $returnstring = "";
-    foreach ($brokenupstrings as $results){
-    $ending = '';
-    foreach ($results as $individual){
-    $code = preg_split("/[&§][0-9a-z]/", $individual);
-    preg_match("/[&§][0-9a-z]/", $individual, $prefix);
-    if (isset($prefix[0])){
-    $actualcode = substr($prefix[0], 1);
-    switch ($actualcode){
-    case "1":
-    $returnstring = $returnstring.'<FONT COLOR="0000AA">';
-    $ending = $ending ."</FONT>";
-    break;
-    case "2":
-    $returnstring = $returnstring.'<FONT COLOR="00AA00">';
-    $ending =$ending ."</FONT>";
-    break;
-    case "3":
-    $returnstring = $returnstring.'<FONT COLOR="00AAAA">';
-    $ending = $ending ."</FONT>";
-    break;
-    case "4":
-    $returnstring = $returnstring.'<FONT COLOR="AA0000">';
-    $ending =$ending ."</FONT>";
-    break;
-    case "5":
-    $returnstring = $returnstring.'<FONT COLOR="AA00AA">';
-    $ending =$ending . "</FONT>";
-    break;
-    case "6":
-    $returnstring = $returnstring.'<FONT COLOR="FFAA00">';
-    $ending =$ending ."</FONT>";
-    break;
-    case "7":
-    $returnstring = $returnstring.'<FONT COLOR="AAAAAA">';
-    $ending = $ending ."</FONT>";
-    break;
-    case "8":
-    $returnstring = $returnstring.'<FONT COLOR="555555">';
-    $ending =$ending ."</FONT>";
-    break;
-    case "9":
-    $returnstring = $returnstring.'<FONT COLOR="5555FF">';
-    $ending =$ending . "</FONT>";
-    break;
-    case "a":
-    $returnstring = $returnstring.'<FONT COLOR="55FF55">';
-    $ending =$ending ."</FONT>";
-    break;
-    case "b":
-    $returnstring = $returnstring.'<FONT COLOR="55FFFF">';
-    $ending = $ending ."</FONT>";
-    break;
-    case "c":
-    $returnstring = $returnstring.'<FONT COLOR="FF5555">';
-    $ending =$ending ."</FONT>";
-    break;
-    case "d":
-    $returnstring = $returnstring.'<FONT COLOR="FF55FF">';
-    $ending =$ending ."</FONT>";
-    break;
-    case "e":
-    $returnstring = $returnstring.'<FONT COLOR="FFFF55">';
-    $ending = $ending ."</FONT>";
-    break;
-    case "f":
-    $returnstring = $returnstring.'<FONT COLOR="FFFFFF">';
-    $ending =$ending ."</FONT>";
-    break;
-    case "l":
-    if (strlen($individual)>2){
-    $returnstring = $returnstring.'<span style="font-weight:bold;">';
-    $ending = "</span>".$ending;
-    break;
+    foreach ($brokenupstrings as $results) {
+        $ending = '';
+        foreach ($results as $individual) {
+            $code = preg_split("/[&§][0-9a-z]/", $individual);
+            preg_match("/[&§][0-9a-z]/", $individual, $prefix);
+            if (isset($prefix[0])) {
+                $actualcode = substr($prefix[0], 1);
+                switch ($actualcode) {
+                    case "1":
+                        $returnstring = $returnstring . '<FONT COLOR="0000AA">';
+                        $ending = $ending . "</FONT>";
+                        break;
+                    case "2":
+                        $returnstring = $returnstring . '<FONT COLOR="00AA00">';
+                        $ending = $ending . "</FONT>";
+                        break;
+                    case "3":
+                        $returnstring = $returnstring . '<FONT COLOR="00AAAA">';
+                        $ending = $ending . "</FONT>";
+                        break;
+                    case "4":
+                        $returnstring = $returnstring . '<FONT COLOR="AA0000">';
+                        $ending = $ending . "</FONT>";
+                        break;
+                    case "5":
+                        $returnstring = $returnstring . '<FONT COLOR="AA00AA">';
+                        $ending = $ending . "</FONT>";
+                        break;
+                    case "6":
+                        $returnstring = $returnstring . '<FONT COLOR="FFAA00">';
+                        $ending = $ending . "</FONT>";
+                        break;
+                    case "7":
+                        $returnstring = $returnstring . '<FONT COLOR="AAAAAA">';
+                        $ending = $ending . "</FONT>";
+                        break;
+                    case "8":
+                        $returnstring = $returnstring . '<FONT COLOR="555555">';
+                        $ending = $ending . "</FONT>";
+                        break;
+                    case "9":
+                        $returnstring = $returnstring . '<FONT COLOR="5555FF">';
+                        $ending = $ending . "</FONT>";
+                        break;
+                    case "a":
+                        $returnstring = $returnstring . '<FONT COLOR="55FF55">';
+                        $ending = $ending . "</FONT>";
+                        break;
+                    case "b":
+                        $returnstring = $returnstring . '<FONT COLOR="55FFFF">';
+                        $ending = $ending . "</FONT>";
+                        break;
+                    case "c":
+                        $returnstring = $returnstring . '<FONT COLOR="FF5555">';
+                        $ending = $ending . "</FONT>";
+                        break;
+                    case "d":
+                        $returnstring = $returnstring . '<FONT COLOR="FF55FF">';
+                        $ending = $ending . "</FONT>";
+                        break;
+                    case "e":
+                        $returnstring = $returnstring . '<FONT COLOR="FFFF55">';
+                        $ending = $ending . "</FONT>";
+                        break;
+                    case "f":
+                        $returnstring = $returnstring . '<FONT COLOR="FFFFFF">';
+                        $ending = $ending . "</FONT>";
+                        break;
+                    case "l":
+                        if (strlen($individual) > 2) {
+                            $returnstring = $returnstring . '<span style="font-weight:bold;">';
+                            $ending = "</span>" . $ending;
+                            break;
+                        }
+                    case "m":
+                        if (strlen($individual) > 2) {
+                            $returnstring = $returnstring . '<strike>';
+                            $ending = "</strike>" . $ending;
+                            break;
+                        }
+                    case "n":
+                        if (strlen($individual) > 2) {
+                            $returnstring = $returnstring . '<span style="text-decoration: underline;">';
+                            $ending = "</span>" . $ending;
+                            break;
+                        }
+                    case "o":
+                        if (strlen($individual) > 2) {
+                            $returnstring = $returnstring . '<i>';
+                            $ending = "</i>" . $ending;
+                            break;
+                        }
+                    case "r":
+                        $returnstring = $returnstring . $ending;
+                        $ending = '';
+                        break;
+                }
+                if (isset($code[1])) {
+                    $returnstring = $returnstring . $code[1];
+                    if (isset($ending) && strlen($individual) > 2) {
+                        $returnstring = $returnstring . $ending;
+                        $ending = '';
+                    }
+                }
+            } else {
+                $returnstring = $returnstring . $individual;
+            }
+
+        }
     }
-    case "m":
-    if (strlen($individual)>2){
-    $returnstring = $returnstring.'<strike>';
-    $ending = "</strike>".$ending;
-    break;
-    }
-    case "n":
-    if (strlen($individual)>2){
-    $returnstring = $returnstring.'<span style="text-decoration: underline;">';
-    $ending = "</span>".$ending;
-    break;
-    }
-    case "o":
-    if (strlen($individual)>2){
-    $returnstring = $returnstring.'<i>';
-    $ending ="</i>".$ending;
-    break;
-    }
-    case "r":
-    $returnstring = $returnstring.$ending;
-    $ending = '';
-    break;
-    }
-    if (isset($code[1])){
-    $returnstring = $returnstring.$code[1];
-    if (isset($ending)&&strlen($individual)>2){
-    $returnstring = $returnstring.$ending;
-    $ending = '';
-    }
-    }
-    }
-    else{
-    $returnstring = $returnstring.$individual;
-    }
-    
-    }
-    }
-    
+
     return $returnstring;
 }
 //Test Data //
 //$text1 = '§r§0k §kMinecraft§rl §lMinecraft§rm §mMinecraft§rn §nMinecraf§ro §oMinecraft§rr §rMinecraft§r§00 §11 §22 §33 §44 §55 &l&66 §77 §88 §99 §aa §bb §cc §dd §ee §ff§bA §5&lminecraft &l§5minecraft &r§9MOTD§6[MegaKraft]§4[Factions]§8[PvP]§2[Economy]';
 //echo MineToWeb($text1);
 
-	
+
 /* items names */
 $items[] = array();
 $items_version = "1.4.5";
 
 /************************************
- * Setup blocks and items name here
- * Minecraft 1.1
+* Setup blocks and items name here
+* Minecraft 1.1
 /************************************/
 
 $items[0][0] = 'Air';
@@ -711,7 +751,9 @@ $items[383][58] = 'Spawn Egg(Endermen)';
 $items[383][59] = 'Spawn Egg(Cave Spider)';
 $items[383][60] = 'Spawn Egg(Silverfish)';
 $items[383][61] = 'Spawn Egg(Blaze)';
-$items[383][62] = 'Spawn Egg(Magma Cube)';$items[383][65] = 'Spawn Egg(Bat)';$items[383][66] = 'Spawn Egg(Witch)';
+$items[383][62] = 'Spawn Egg(Magma Cube)';
+$items[383][65] = 'Spawn Egg(Bat)';
+$items[383][66] = 'Spawn Egg(Witch)';
 $items[383][90] = 'Spawn Egg(Pig)';
 $items[383][91] = 'Spawn Egg(Sheep)';
 $items[383][92] = 'Spawn Egg(Cow)';
@@ -786,7 +828,8 @@ $maxlevel[2] = 4;
 $maxlevel[3] = 4;
 $maxlevel[4] = 4;
 $maxlevel[5] = 3;
-$maxlevel[6] = 1;$maxlevel[7] = 1;
+$maxlevel[6] = 1;
+$maxlevel[7] = 1;
 $maxlevel[16] = 5;
 $maxlevel[17] = 5;
 $maxlevel[18] = 5;
@@ -802,25 +845,87 @@ $maxlevel[49] = 2;
 $maxlevel[50] = 1;
 $maxlevel[51] = 1;
 
-$ench[34] = array('name' => 'DURABILITY', 'startlevel' => 1, 'maxlevel' => 3);
-$ench[0] = array('name' => 'PROTECTION_ENVIRONMENTAL', 'startlevel' => 1, 'maxlevel' => 4);
-$ench[35] = array('name' => 'LOOT_BONUS_BLOCKS', 'startlevel' => 1, 'maxlevel' => 3);
-$ench[1] = array('name' => 'PROTECTION_FIRE', 'startlevel' => 1, 'maxlevel' => 4);
-$ench[32] = array('name' => 'DIG_SPEED', 'startlevel' => 1, 'maxlevel' => 5);
-$ench[2] = array('name' => 'PROTECTION_FALL', 'startlevel' => 1, 'maxlevel' => 4);
-$ench[33] = array('name' => 'SILK_TOUCH', 'startlevel' => 1, 'maxlevel' => 1);
-$ench[3] = array('name' => 'PROTECTION_EXPLOSIONS', 'startlevel' => 1, 'maxlevel' => 4);
-$ench[4] = array('name' => 'PROTECTION_PROJECTILE', 'startlevel' => 1, 'maxlevel' => 4);
-$ench[5] = array('name' => 'OXYGEN', 'startlevel' => 1, 'maxlevel' => 3);
-$ench[6] = array('name' => 'WATER_WORKER', 'startlevel' => 1, 'maxlevel' => 1);
-$ench[51] = array('name' => 'ARROW_INFINITE', 'startlevel' => 1, 'maxlevel' => 1);
-$ench[17] = array('name' => 'DAMAGE_UNDEAD', 'startlevel' => 1, 'maxlevel' => 5);
-$ench[50] = array('name' => 'ARROW_FIRE', 'startlevel' => 1, 'maxlevel' => 1);
-$ench[16] = array('name' => 'DAMAGE_ALL', 'startlevel' => 1, 'maxlevel' => 5);
-$ench[49] = array('name' => 'ARROW_KNOCKBACK', 'startlevel' => 1, 'maxlevel' => 2);
-$ench[19] = array('name' => 'KNOCKBACK', 'startlevel' => 1, 'maxlevel' => 2);
-$ench[48] = array('name' => 'ARROW_DAMAGE', 'startlevel' => 1, 'maxlevel' => 5);
-$ench[18] = array('name' => 'DAMAGE_ARTHROPODS', 'startlevel' => 1, 'maxlevel' => 5);
-$ench[21] = array('name' => 'LOOT_BONUS_MOBS', 'startlevel' => 1, 'maxlevel' => 3);
-$ench[20] = array('name' => 'FIRE_ASPECT', 'startlevel' => 1, 'maxlevel' => 2);
-
+$ench[34] = array(
+    'name' => 'DURABILITY',
+    'startlevel' => 1,
+    'maxlevel' => 3);
+$ench[0] = array(
+    'name' => 'PROTECTION_ENVIRONMENTAL',
+    'startlevel' => 1,
+    'maxlevel' => 4);
+$ench[35] = array(
+    'name' => 'LOOT_BONUS_BLOCKS',
+    'startlevel' => 1,
+    'maxlevel' => 3);
+$ench[1] = array(
+    'name' => 'PROTECTION_FIRE',
+    'startlevel' => 1,
+    'maxlevel' => 4);
+$ench[32] = array(
+    'name' => 'DIG_SPEED',
+    'startlevel' => 1,
+    'maxlevel' => 5);
+$ench[2] = array(
+    'name' => 'PROTECTION_FALL',
+    'startlevel' => 1,
+    'maxlevel' => 4);
+$ench[33] = array(
+    'name' => 'SILK_TOUCH',
+    'startlevel' => 1,
+    'maxlevel' => 1);
+$ench[3] = array(
+    'name' => 'PROTECTION_EXPLOSIONS',
+    'startlevel' => 1,
+    'maxlevel' => 4);
+$ench[4] = array(
+    'name' => 'PROTECTION_PROJECTILE',
+    'startlevel' => 1,
+    'maxlevel' => 4);
+$ench[5] = array(
+    'name' => 'OXYGEN',
+    'startlevel' => 1,
+    'maxlevel' => 3);
+$ench[6] = array(
+    'name' => 'WATER_WORKER',
+    'startlevel' => 1,
+    'maxlevel' => 1);
+$ench[51] = array(
+    'name' => 'ARROW_INFINITE',
+    'startlevel' => 1,
+    'maxlevel' => 1);
+$ench[17] = array(
+    'name' => 'DAMAGE_UNDEAD',
+    'startlevel' => 1,
+    'maxlevel' => 5);
+$ench[50] = array(
+    'name' => 'ARROW_FIRE',
+    'startlevel' => 1,
+    'maxlevel' => 1);
+$ench[16] = array(
+    'name' => 'DAMAGE_ALL',
+    'startlevel' => 1,
+    'maxlevel' => 5);
+$ench[49] = array(
+    'name' => 'ARROW_KNOCKBACK',
+    'startlevel' => 1,
+    'maxlevel' => 2);
+$ench[19] = array(
+    'name' => 'KNOCKBACK',
+    'startlevel' => 1,
+    'maxlevel' => 2);
+$ench[48] = array(
+    'name' => 'ARROW_DAMAGE',
+    'startlevel' => 1,
+    'maxlevel' => 5);
+$ench[18] = array(
+    'name' => 'DAMAGE_ARTHROPODS',
+    'startlevel' => 1,
+    'maxlevel' => 5);
+$ench[21] = array(
+    'name' => 'LOOT_BONUS_MOBS',
+    'startlevel' => 1,
+    'maxlevel' => 3);
+$ench[20] = array(
+    'name' => 'FIRE_ASPECT',
+    'startlevel' => 1,
+    'maxlevel' => 2);
