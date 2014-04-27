@@ -11,7 +11,8 @@ $MyBBI = new MyBBIntegrator($mybb, $db, $cache, $plugins, $lang, $config);
 $response["success"] = 0;
 
 if (isset($_POST['user']) && isset($_POST['pass']) && isset($_POST['title']) &&
-    isset($_POST['content']) && isset($_POST['to'])) {
+    isset($_POST['content']) && isset($_POST['to'])
+) {
     $user = $_POST['user'];
     $pass = $_POST['pass'];
     $title = $_POST['title'];

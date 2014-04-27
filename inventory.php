@@ -201,9 +201,9 @@ if (isset($_GET['user']) && isset($_GET['pass'])) {
                 });
                 /**
                  *    $('#users-sidelist').on("click", "li.user-selector a", function(event){
-                 * 		$('#users-sidelist li.user-selector.active').removeClass('active');
-                 * $(this).parent().addClass('active');
-                 */
+ * 		$('#users-sidelist li.user-selector.active').removeClass('active');
+ * $(this).parent().addClass('active');
+ */
                 current_userid = <?php echo "'".$user[0]['id']."'"; ?>;
                 current_username = <?php echo "'".$user[0]['name']."'"; ?>;
                 $('#user-summary h1').text(current_username);

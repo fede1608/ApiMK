@@ -21,7 +21,7 @@ if (isset($_POST['user']) && isset($_POST['pass']) && isset($_POST['titulo']) &&
         $mundo = $_POST['mundo'];
         $ciudad = $_POST['ciudad'];
         $tipo = $_POST['tipo'];
-        $normas = $_POST['normas'];
+        $normas = $_POST['reglas'];
         $explicacion = $_POST['explicacion'];
         $solucion = $_POST['solucion'];
 
@@ -45,7 +45,7 @@ if (isset($_POST['user']) && isset($_POST['pass']) && isset($_POST['titulo']) &&
 
         );
         $resp = $MyBBI->createThread($thread);
-        $response["success"] = isset($resp['pid'])?1:-1;
+        $response["success"] = isset($resp['pid']) ? 1 : -1;
     }
 }
 

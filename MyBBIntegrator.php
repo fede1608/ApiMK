@@ -13,16 +13,14 @@
  *
  *
  *
- * 	This program is free software: you can redistribute it and/or modify
+ *    This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
  *  the Free Software Foundation, either version 3 of the License, or
  *  (at your option) any later version.
-
  *  This program is distributed in the hope that it will be useful,
  *  but WITHOUT ANY WARRANTY; without even the implied warranty of
  *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  *  GNU General Public License for more details.
-
  *  You should have received a copy of the GNU General Public License
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
@@ -66,7 +64,7 @@ class MyBBIntegrator
     var $parser;
 
     /**
-     * Shows a message for errors occuring in this class. 
+     * Shows a message for errors occuring in this class.
      * Afterwards it stops the script
      *
      * @param string $message The error message
@@ -121,7 +119,8 @@ class MyBBIntegrator
         if ($forum_password) {
             if (empty($password)) {
                 if (!$this->mybb->cookies['forumpass'][$forum_id] || ($this->mybb->cookies['forumpass'][$forum_id] &&
-                    md5($this->mybb->user['uid'] . $forum_password) != $this->mybb->cookies['forumpass'][$forum_id])) {
+                        md5($this->mybb->user['uid'] . $forum_password) != $this->mybb->cookies['forumpass'][$forum_id])
+                ) {
                     return false;
                 } else {
                     return true;
@@ -129,7 +128,7 @@ class MyBBIntegrator
             } else {
                 if ($forum_password == $password) {
                     $this->setCookie('forumpass[' . $forum_id . ']', md5($this->mybb->user['uid'] .
-                        $password), null, true);
+                            $password), null, true);
                     return true;
                 } else {
                     return false;
@@ -175,11 +174,11 @@ class MyBBIntegrator
      * @param array $data Array with keys according to database layout, which holds the data of the forum
      * @param array $permissions Array with Permission entries (structure: array( 'canview' => array( 'usergroupid' => 1 ) )) (an example)
      * @param array $default_permissions Array which defines, if default permissions shall be used (structure: array( usergroupid => 0 / 1 )
-     * 								  	 Can be left empty, then this function will take care of it
+     *                                     Can be left empty, then this function will take care of it
      * @return $data with more values, like fid and parentlist
      */
     function createCategory($data, $permissions = array(), $default_permissions =
-        array())
+    array())
     {
         require_once MYBB_ADMIN_DIR . 'inc/functions.php';
 
@@ -203,10 +202,11 @@ class MyBBIntegrator
 
         if (!empty($permissions)) {
             if ((!isset($permissions['canview']) || empty($permissions['canview'])) || (!
-                isset($permissions['canpostthreads']) || empty($permissions['canpostthreads'])) ||
+                    isset($permissions['canpostthreads']) || empty($permissions['canpostthreads'])) ||
                 (!isset($permissions['canpostreplys']) || empty($permissions['canpostreplys'])) ||
                 (!isset($permissions['canpostpolls']) || empty($permissions['canpostpolls'])) ||
-                (!isset($permissions['canpostattachments']) || empty($permissions['canpostattachments']))) {
+                (!isset($permissions['canpostattachments']) || empty($permissions['canpostattachments']))
+            ) {
                 $this->_errorAndDie('The $permissions Parameter does not have the correct format. It requires following keys: <i>canview, canpostthreads, canpostreplys, canpostpolls and canpostattachments</i>');
             }
 
@@ -256,11 +256,11 @@ class MyBBIntegrator
      * @param array $data Array with keys according to database layout, which holds the data of the forum
      * @param array $permissions Array with Permission entries (structure: array( 'canview' => array( 'usergroupid' => 1 ) )) (an example)
      * @param array $default_permissions Array which defines, if default permissions shall be used (structure: array( usergroupid => 0 / 1 )
-     * 								  	 Can be left empty, then this function will take care of it
+     *                                     Can be left empty, then this function will take care of it
      * @return $data with more values, like fid and parentlist
      */
     function createForum($data, $permissions = array(), $default_permissions = array
-        ())
+    ())
     {
         require_once MYBB_ADMIN_DIR . 'inc/functions.php';
 
@@ -284,10 +284,11 @@ class MyBBIntegrator
 
         if (!empty($permissions)) {
             if ((!isset($permissions['canview']) || empty($permissions['canview'])) || (!
-                isset($permissions['canpostthreads']) || empty($permissions['canpostthreads'])) ||
+                    isset($permissions['canpostthreads']) || empty($permissions['canpostthreads'])) ||
                 (!isset($permissions['canpostreplys']) || empty($permissions['canpostreplys'])) ||
                 (!isset($permissions['canpostpolls']) || empty($permissions['canpostpolls'])) ||
-                (!isset($permissions['canpostattachments']) || empty($permissions['canpostattachments']))) {
+                (!isset($permissions['canpostattachments']) || empty($permissions['canpostattachments']))
+            ) {
                 $this->_errorAndDie('The $permissions Parameter does not have the correct format. It requires following keys: <i>canview, canpostthreads, canpostreplys, canpostpolls and canpostattachments</i>');
             }
 
@@ -360,8 +361,9 @@ class MyBBIntegrator
         }
         // No permission if: Not thread author; not moderator; no forum perms to view, post threads, post polls
         if (($thread['uid'] != $this->mybb->user['uid'] && !is_moderator($fid)) || ($forumpermissions['canview'] ==
-            0 || $forumpermissions['canpostthreads'] == 0 || $forumpermissions['canpostpolls'] ==
-            0)) {
+                0 || $forumpermissions['canpostthreads'] == 0 || $forumpermissions['canpostpolls'] ==
+                0)
+        ) {
             return false;
         }
 
@@ -371,7 +373,8 @@ class MyBBIntegrator
 
         $polloptions = count($data['options']);
         if ($this->mybb->settings['maxpolloptions'] && $polloptions > $this->mybb->
-            settings['maxpolloptions']) {
+                settings['maxpolloptions']
+        ) {
             $polloptions = $this->mybb->settings['maxpolloptions'];
         }
 
@@ -403,7 +406,8 @@ class MyBBIntegrator
             }
 
             if (my_strlen($options[$i]) > $this->mybb->settings['polloptionlimit'] && $this->
-                mybb->settings['polloptionlimit'] != 0) {
+                    mybb->settings['polloptionlimit'] != 0
+            ) {
                 $lengtherror = 1;
                 break;
             }
@@ -496,8 +500,8 @@ class MyBBIntegrator
      *
      * @param array $data Thread data
      * @param boolean $inline_errors Defines if we want a formatted error string or an array
-     * @return array|string 
-     * @return array|string When true it will return an array with threadID, postID and status of being visible - false = error array or inline string 
+     * @return array|string
+     * @return array|string When true it will return an array with threadID, postID and status of being visible - false = error array or inline string
      */
     function createThread($data, $inline_errors = true)
     {
@@ -650,7 +654,7 @@ class MyBBIntegrator
 
         if (is_array($pm_id)) {
             $this->db->update_query('privatemessages', $data, 'pmid IN (' . implode(',',
-                array_map('intval', $pm_id)) . ')');
+                    array_map('intval', $pm_id)) . ')');
         } else {
             $this->db->update_query('privatemessages', $data, 'pmid = ' . intval($pm_id));
         }
@@ -677,7 +681,7 @@ class MyBBIntegrator
 
         if (is_array($user_id)) {
             $this->db->update_query('privatemessages', $data, 'uid IN (' . implode(',',
-                array_map('intval', $user_id)) . ')');
+                    array_map('intval', $user_id)) . ')');
         } else {
             $this->db->update_query('privatemessages', $data, 'uid = ' . intval($user_id));
         }
@@ -730,7 +734,7 @@ class MyBBIntegrator
      * @return array
      */
     function getBusyThreadsWithinTimespan($timespan = 86400, $post_sort_order =
-        'DESC', $postamount_sort_order = 'DESC')
+    'DESC', $postamount_sort_order = 'DESC')
     {
         $threads = array();
 
@@ -750,7 +754,7 @@ class MyBBIntegrator
         while ($post = $this->db->fetch_array($query)) {
             /**
              * The return array we are building is being filled with the thread itself, but also with the posts
-             * We will later increase the Postamount, so we can sort it 
+             * We will later increase the Postamount, so we can sort it
              */
             if (!isset($threads[$post['tid']])) {
                 $threads[$post['tid']] = array(
@@ -796,7 +800,7 @@ class MyBBIntegrator
             if ($item1['postamount'] > $item2['postamount']) {
                 return 1;
             } else {
-                return - 1;
+                return -1;
             }
         }
 
@@ -808,7 +812,7 @@ class MyBBIntegrator
             }
 
             if ($item1['postamount'] > $item2['postamount']) {
-                return - 1;
+                return -1;
             } else {
                 return 1;
             }
@@ -835,7 +839,8 @@ class MyBBIntegrator
         // Do we have permission?
         $forumpermissions = forum_permissions($forum['fid']);
         if ($forumpermissions['canview'] != 1 || $forumpermissions['canviewthreads'] !=
-            1) {
+            1
+        ) {
             // error_no_permission();
             return false;
         } else {
@@ -948,7 +953,8 @@ class MyBBIntegrator
             // Do we have permission?
             $forumpermissions = forum_permissions($forum_id);
             if ($forumpermissions['canview'] != 1 || $forumpermissions['canviewthreads'] !=
-                1) {
+                1
+            ) {
                 // error_no_permission();
                 return false;
             }
@@ -997,7 +1003,7 @@ class MyBBIntegrator
      * @return array
      */
     function getLatestThreads($forum_id = 0, $fields = '*', $limit = 7, $exclude_invisible = true,
-        $join_forums = true, $join_first_post = true)
+                              $join_forums = true, $join_first_post = true)
     {
         if ($forum_id != 0) {
             // If we have multiple values, we have to check permission for each forum!
@@ -1005,7 +1011,8 @@ class MyBBIntegrator
                 foreach ($forum_id as $single_forum_id) {
                     $forum_permissions = forum_permissions($single_forum_id);
                     if ($forum_permissions['canview'] != 1 || $forum_permissions['canviewthreads'] !=
-                        1) {
+                        1
+                    ) {
                         // error_no_permission();
                         return false;
                     }
@@ -1014,7 +1021,8 @@ class MyBBIntegrator
                 // Do we have permission?
                 $forumpermissions = forum_permissions($forum_id);
                 if ($forumpermissions['canview'] != 1 || $forumpermissions['canviewthreads'] !=
-                    1) {
+                    1
+                ) {
                     // error_no_permission();
                     return false;
                 }
@@ -1032,8 +1040,7 @@ class MyBBIntegrator
         if (is_array($forum_id) || is_object($forum_id)) {
             $condition .= ' AND t.`fid` IN (' . implode(', ', $forum_id) . ')';
 
-        }
-        // Or are we just fetching threads from one forum?
+        } // Or are we just fetching threads from one forum?
         else {
             $condition .= ($forum_id == 0) ? '' : ' AND t.`fid` = ' . $forum_id;
         }
@@ -1142,31 +1149,31 @@ class MyBBIntegrator
      * Ideal to offer a multi-page member list
      *
      * @param array $data Contains data affecting the member query - List of Array keys below
-     *					  - orderby: What table column will the member list be sorted by?
-     *					  - orderdir: Ascending or Descending order direction
-     *					  - perpage: Amount of members to fetch (set 0 for all members)
-     *					  - letter: Beginning character of member name
-     *					  - username: Searching for a matching username
-     *					  - username_match: Set this to "begins" when username shall being with given token - otherwise it goes or "contains"
-     *					  - website: String contained in website
-     *					  - aim: Search for an AIM
-     *					  - icq: Search for an ICQ number
-     *					  - msn: Search for a MSN ID
-     *					  - yahoo: Search for a Yahoo ID
-     *					  - page: Which page of the list will we be retrieving
+     *                      - orderby: What table column will the member list be sorted by?
+     *                      - orderdir: Ascending or Descending order direction
+     *                      - perpage: Amount of members to fetch (set 0 for all members)
+     *                      - letter: Beginning character of member name
+     *                      - username: Searching for a matching username
+     *                      - username_match: Set this to "begins" when username shall being with given token - otherwise it goes or "contains"
+     *                      - website: String contained in website
+     *                      - aim: Search for an AIM
+     *                      - icq: Search for an ICQ number
+     *                      - msn: Search for a MSN ID
+     *                      - yahoo: Search for a Yahoo ID
+     *                      - page: Which page of the list will we be retrieving
      * @return array
      */
     function getMembers($data = array())
     {
         /**
-         *  Make sure we have initial values in the data array	
+         *  Make sure we have initial values in the data array
          */
 
         $data['orderby'] = (!isset($data['orderby'])) ? 'u.`username`' : $data['orderby'];
         $data['orderdir'] = (!isset($data['orderdir'])) ? 'ASC' : strtoupper($data['orderdir']);
         $data['orderdir'] = ($data['orderdir'] == 'ASC') ? 'ASC' : 'DESC';
         $data['perpage'] = (!isset($data['perpage'])) ? (int)$this->mybb->settings['membersperpage'] : (int)
-            $data['perpage'];
+        $data['perpage'];
         $data['letter'] = (!isset($data['letter'])) ? '' : $data['letter'];
         $data['username'] = (!isset($data['username'])) ? '' : $data['username'];
         $data['username_match'] = (!isset($data['username_match'])) ? 'begins' : $data['username_match'];
@@ -1189,8 +1196,7 @@ class MyBBIntegrator
             // Letter is 0: Shall start with number
             if ($data['letter'] == '0') {
                 $sql_where .= " AND u.`username` NOT REGEXP('[a-zA-Z]')";
-            }
-            // letter is not 0, so it will be fetching names according to first char
+            } // letter is not 0, so it will be fetching names according to first char
             else {
                 $sql_where .= " AND u.`username` LIKE '" . $this->db->escape_string($data['letter']) .
                     "%'";
@@ -1322,7 +1328,7 @@ class MyBBIntegrator
      * @return array|boolean: If unsuccessful, it returns false - Otherwise the Database row
      */
     function getPost($post_id, $parsed = false, $override_forum_parse_options =
-        array())
+    array())
     {
         if ($post_id == 0) {
             $this->_errorAndDie('Specified post ID cannot be 0!');
@@ -1339,7 +1345,8 @@ class MyBBIntegrator
         // Do we have permission?
         $forumpermissions = forum_permissions($post['fid']);
         if ($forumpermissions['canview'] != 1 || $forumpermissions['canviewthreads'] !=
-            1) {
+            1
+        ) {
             // error_no_permission();
             return false;
         }
@@ -1371,16 +1378,16 @@ class MyBBIntegrator
             // Self-defined options given in the function parameter
             $parser_options = array(
                 'allow_html' => (isset($override_forum_parse_options['allow_html']) && $override_forum_parse_options['allow_html'] ==
-                    1) ? 1 : 0,
+                        1) ? 1 : 0,
                 'allow_mycode' => (isset($override_forum_parse_options['allow_mycode']) && $override_forum_parse_options['allow_mycode'] ==
-                    1) ? 1 : 0,
+                        1) ? 1 : 0,
                 'allow_smilies' => (isset($override_forum_parse_options['allow_smilies']) && $override_forum_parse_options['allow_smilies'] ==
-                    1) ? 1 : 0,
+                        1) ? 1 : 0,
                 'allow_imgcode' => (isset($override_forum_parse_options['allow_imgcode']) && $override_forum_parse_options['allow_imgcode'] ==
-                    1) ? 1 : 0,
+                        1) ? 1 : 0,
                 'filter_badwords' => (isset($override_forum_parse_options['filter_badwords']) &&
-                    $override_forum_parse_options['filter_badwords'] == 1) ? 1 : 0,
-                );
+                        $override_forum_parse_options['filter_badwords'] == 1) ? 1 : 0,
+            );
         }
 
         // Overwrite the message with the parsed message
@@ -1464,7 +1471,8 @@ class MyBBIntegrator
         // Do we have permission?
         $forumpermissions = forum_permissions($thread_forumid);
         if ($forumpermissions['canview'] != 1 || $forumpermissions['canviewthreads'] !=
-            1) {
+            1
+        ) {
             // error_no_permission();
             return false;
         }
@@ -1480,6 +1488,7 @@ class MyBBIntegrator
 
         return $arr;
     }
+
     function getPrivateMessage($pmid)
     {
         $arr = array();
@@ -1517,11 +1526,11 @@ class MyBBIntegrator
      *
      * @param integer $user_id ID of user
      * @param array $params Array with options for SQL Query (orderby, sort)
-     * @param boolean $translate_folders If the folders should be turned into readable format à la "inbox"
+     * @param boolean $translate_folders If the folders should be turned into readable format ï¿½ la "inbox"
      * @return array
      */
     function getPrivateMessagesOfUser($user_id, $params = array('orderby' =>
-            'pm.dateline', 'sort' => 'DESC'), $translate_folders = true)
+        'pm.dateline', 'sort' => 'DESC'), $translate_folders = true)
     {
         /**
          * This is what we will be returning
@@ -1556,8 +1565,7 @@ class MyBBIntegrator
                 // If we translate the folder names, our array index will be the translated folder name
                 if ($translate_folders == true) {
                     $arr[get_pm_folder_name($message['folder'])][] = $message;
-                }
-                // If we don't want translated folder names, our array index will be the folder number
+                } // If we don't want translated folder names, our array index will be the folder number
                 else {
                     $arr[$message['folder']][] = $message;
                 }
@@ -1581,7 +1589,8 @@ class MyBBIntegrator
         // Do we have permission?
         $forumpermissions = forum_permissions($thread['fid']);
         if ($forumpermissions['canview'] != 1 || $forumpermissions['canviewthreads'] !=
-            1) {
+            1
+        ) {
             // error_no_permission();
             return false;
         } else {
@@ -1595,7 +1604,7 @@ class MyBBIntegrator
      * @param integer $forum_id IDs of Forums to fetch threads from
      * @param string $fields If you want to fetch certain fields, define a string with them
      * @param string $where Additional WHERE constellation if needed
-     * @pararm array $query_params Parameters for the Query to run in the database 
+     * @pararm array $query_params Parameters for the Query to run in the database
      * (order_by, order_dir, limit_start, limit [limit will only be acknowledged if both limit vars are defined])
      * @param boolean $excluse_invisible Shall we get invisible threads too?
      * @param boolean $join_forums Do we also want to get the forum information of where the threads are located?
@@ -1603,14 +1612,15 @@ class MyBBIntegrator
      * @return array
      */
     function getThreads($forum_id, $fields = '*', $where = '', $query_params = array
-        ('order_by' => 't.`subject`', 'order_dir' => 'ASC'), $exclude_invisible = true,
-        $join_forums = false, $join_first_post = false)
+                                 ('order_by' => 't.`subject`', 'order_dir' => 'ASC'), $exclude_invisible = true,
+                        $join_forums = false, $join_first_post = false)
     {
         // Do we have permission?
         if (!is_array($forum_id)) {
             $forumpermissions = forum_permissions($forum_id);
             if ($forumpermissions['canview'] != 1 || $forumpermissions['canviewthreads'] !=
-                1) {
+                1
+            ) {
                 // error_no_permission();
                 return false;
             }
@@ -1619,7 +1629,8 @@ class MyBBIntegrator
             foreach ($forum_id as $forum_id_single) {
                 $forumpermissions = forum_permissions($forum_id_single);
                 if ($forumpermissions['canview'] != 1 || $forumpermissions['canviewthreads'] !=
-                    1) {
+                    1
+                ) {
                     // error_no_permission();
                     return false;
                 }
@@ -1636,8 +1647,7 @@ class MyBBIntegrator
         // Are we fetching threads from multiple forums?
         if (is_array($forum_id)) {
             $condition .= ' AND t.`fid` IN (' . implode(', ', $forum_id) . ')';
-        }
-        // Or are we just fetching threads from one forum?
+        } // Or are we just fetching threads from one forum?
         else {
             $condition .= ($forum_id == 0) ? '' : ' AND t.`fid` = ' . $forum_id;
         }
@@ -1718,8 +1728,7 @@ class MyBBIntegrator
         // If given user id is 0, we use the own User ID
         if ($user_id == 0) {
             return get_user($this->mybb->user['uid']);
-        }
-        // Otherwise we fetch info from given User ID
+        } // Otherwise we fetch info from given User ID
         else {
             return get_user($user_id);
         }
@@ -1746,6 +1755,7 @@ class MyBBIntegrator
         $user = $this->db->fetch_array($query);
         return $user['uid'];
     }
+
     function getUsername($userid = 1)
     {
         $query = $this->db->query('
@@ -1756,6 +1766,7 @@ class MyBBIntegrator
         $user = $this->db->fetch_array($query);
         return $user['username'];
     }
+
     function claimCoin($username = '')
     {
         if ($username == '')
@@ -1782,7 +1793,7 @@ class MyBBIntegrator
 		');
         $user = $this->db->fetch_array($query);
         if ($user['cant'] == 1)
-            return - 1;
+            return -1;
 
         $query = $this->db->query('
 			UPDATE ' . TABLE_PREFIX . 'users u
@@ -1791,6 +1802,7 @@ class MyBBIntegrator
 		');
         return 1;
     }
+
     /**
      * Fetch the users being online
      * Refers to: index.php
@@ -1811,7 +1823,8 @@ class MyBBIntegrator
 
         // We only fetch the Who's Online list if the setting tells us that we can
         if ($this->mybb->settings['showwol'] != 0 && $this->mybb->usergroup['canviewonline'] !=
-            0) {
+            0
+        ) {
             // Get the online users.
             $timesearch = TIME_NOW - $this->mybb->settings['wolcutoff'];
             $comma = '';
@@ -1844,7 +1857,8 @@ class MyBBIntegrator
                         }
 
                         if ($user['invisible'] != 1 || $this->mybb->usergroup['canviewwolinvis'] == 1 ||
-                            $user['uid'] == $this->mybb->user['uid']) {
+                            $user['uid'] == $this->mybb->user['uid']
+                        ) {
                             // Maybe we don't want colored usernames
                             if ($colored_usernames == true) {
                                 // Properly format the username and assign the template.
@@ -1863,15 +1877,11 @@ class MyBBIntegrator
                         // Increase member counter
                         ++$arr['count_members'];
                     }
-                }
-
-                // The user is a search bot.
+                } // The user is a search bot.
                 elseif (my_strpos($user['sid'], "bot=") !== false && $spiders[$botkey]) {
                     ++$arr['count_bots'];
                     $arr['bots'][] = $spiders[$botkey];
-                }
-
-                // The user is a guest
+                } // The user is a guest
                 else {
                     ++$arr['count_guests'];
                 }
@@ -2110,7 +2120,8 @@ class MyBBIntegrator
             } else {
                 // Show captcha image for guests if enabled
                 if ($this->mybb->settings['captchaimage'] == 1 && function_exists("imagepng") &&
-                    !$this->mybb->user['uid']) {
+                    !$this->mybb->user['uid']
+                ) {
                     return $this->generateCaptcha();
                 }
             }
@@ -2131,12 +2142,12 @@ class MyBBIntegrator
 
         // Delete old session entry
         $this->db->delete_query("sessions", "ip='" . $this->db->escape_string($this->
-            mybb->session->ipaddress) . "' AND sid != '" . $this->mybb->session->sid . "'");
+                mybb->session->ipaddress) . "' AND sid != '" . $this->mybb->session->sid . "'");
 
         // Create a new session and save it in the database
-        $newsession = array("uid" => $user['uid'], );
+        $newsession = array("uid" => $user['uid'],);
         $this->db->update_query("sessions", $newsession, "sid='" . $this->mybb->session->
-            sid . "'");
+                sid . "'");
 
         // Temporarily set the cookie remember option for the login cookies
         $this->mybb->user['remember'] = $user['remember'];
@@ -2233,13 +2244,14 @@ class MyBBIntegrator
 
         // Check session ID if we have one
         if ($this->mybb->input['sid'] && $this->mybb->input['sid'] != $this->mybb->
-            session->sid) {
+                session->sid
+        ) {
             return false;
-        }
-        // Otherwise, check logoutkey
+        } // Otherwise, check logoutkey
         else
             if (!$this->mybb->input['sid'] && $this->mybb->input['logoutkey'] != $this->
-                mybb->user['logoutkey']) {
+                    mybb->user['logoutkey']
+            ) {
                 return false;
             }
 
@@ -2253,7 +2265,7 @@ class MyBBIntegrator
             $lastvisit = array(
                 "lastactive" => $time - 900,
                 "lastvisit" => $time,
-                );
+            );
             $this->db->update_query("users", $lastvisit, "uid='" . $this->mybb->user['uid'] .
                 "'");
             $this->db->delete_query("sessions", "sid='" . $this->mybb->session->sid . "'");
@@ -2288,9 +2300,7 @@ class MyBBIntegrator
             if ($redirect_url != '') {
                 redirect($redirect_url, $this->lang->redirect_markforumsread);
             }
-        }
-
-        // If a specific ID has been defined, we certainly want to mark ONE forum as read
+        } // If a specific ID has been defined, we certainly want to mark ONE forum as read
         else {
             // Does the Forum exist?
             $validforum = $this->getForum($id);
@@ -2320,12 +2330,12 @@ class MyBBIntegrator
      */
     function MyBBIntegrator(&$mybb, &$db, &$cache, &$plugins, &$lang, &$config)
     {
-        $this->mybb = &$mybb;
-        $this->db = &$db;
+        $this->mybb = & $mybb;
+        $this->db = & $db;
         $this->cache = $cache;
-        $this->plugins = &$plugins;
-        $this->lang = &$lang;
-        $this->config = &$config;
+        $this->plugins = & $plugins;
+        $this->lang = & $lang;
+        $this->config = & $config;
 
         define('MYBB_ADMIN_DIR', MYBB_ROOT . $this->config['admin_dir'] . '/');
 
@@ -2388,7 +2398,7 @@ class MyBBIntegrator
      * Refers to: /inc/class_parser.php
      *
      * @param string $message The String which shall be parsed
-     * @param array $options Options the parser can accept: filter_badwords, allow_html, allow_mycode, me_username, allow_smilies, nl2br, 
+     * @param array $options Options the parser can accept: filter_badwords, allow_html, allow_mycode, me_username, allow_smilies, nl2br,
      * @return string Parsed string
      */
     function parseString($message, $options = array())
@@ -2510,8 +2520,8 @@ class MyBBIntegrator
      * Refers to: /member.php
      *
      * @param array $info Contains user information of the User to be registered
-     * @return array|string If registration fails, we return an array containing the error message, 
-     * 						If registration is successful, we return the string, which notifies the user of what will be the next action
+     * @return array|string If registration fails, we return an array containing the error message,
+     *                        If registration is successful, we return the string, which notifies the user of what will be the next action
      */
     function register($info = array())
     {
@@ -2558,7 +2568,8 @@ class MyBBIntegrator
         }
 
         if ($this->mybb->settings['regtype'] == "verify" || $this->mybb->settings['regtype'] ==
-            "admin" || $info['coppa'] == 1) {
+            "admin" || $info['coppa'] == 1
+        ) {
             $usergroup = 5;
         } else {
             $usergroup = 2;
@@ -2583,7 +2594,7 @@ class MyBBIntegrator
             "regip" => $this->mybb->session->ipaddress,
             "longregip" => ip2long($this->mybb->session->ipaddress),
             "coppa_user" => intval($this->mybb->cookies['coppauser']),
-            );
+        );
 
         if (isset($info['regcheck1']) && isset($info['regcheck2'])) {
             $user['regcheck1'] = $info['regcheck1'];
@@ -2642,13 +2653,11 @@ class MyBBIntegrator
             $this->plugins->run_hooks("member_do_register_end");
 
             return $this->lang->redirect_registered_coppa_activate;
-        }
-
-        /**
+        } /**
          * Register Mode: Email Verification
          * A mail is dispatched containing an activation link.
          * The activation link is a reference to the newly created database entry
-         */  else
+         */ else
             if ($this->mybb->settings['regtype'] == "verify") {
                 // Generate and save the activation code in the database
                 $activationcode = random_str();
@@ -2676,12 +2685,10 @@ class MyBBIntegrator
                 $this->plugins->run_hooks("member_do_register_end");
 
                 return $this->lang->redirect_registered_activation;
-            }
-
-        /**
-         * Register Mode: Send Random Password
-         * A mail is dispatched, containing the random password for the user
-         */  else
+            } /**
+             * Register Mode: Send Random Password
+             * A mail is dispatched, containing the random password for the user
+             */ else
                 if ($this->mybb->settings['regtype'] == "randompass") {
                     // Generate and send the email
                     $emailsubject = $this->lang->sprintf($this->lang->emailsubject_randompassword, $this->
@@ -2694,12 +2701,10 @@ class MyBBIntegrator
                     $this->plugins->run_hooks("member_do_register_end");
 
                     return $this->lang->redirect_registered_passwordsent;
-                }
-
-        /**
-         * Register Mode: Admin Activation
-         * Return the message that the user will need to be authorized by an admin
-         */  else
+                } /**
+                 * Register Mode: Admin Activation
+                 * Return the message that the user will need to be authorized by an admin
+                 */ else
                     if ($this->mybb->settings['regtype'] == "admin") {
                         // Build the message to return
                         $this->lang->redirect_registered_admin_activate = $this->lang->sprintf($this->
@@ -2709,12 +2714,10 @@ class MyBBIntegrator
                         $this->plugins->run_hooks("member_do_register_end");
 
                         return $this->lang->redirect_registered_admin_activate;
-                    }
-
-        /**
-         * No activation required whatsoever,
-         * directly registered
-         */  else {
+                    } /**
+                     * No activation required whatsoever,
+                     * directly registered
+                     */ else {
                         // Build the message to return
                         $this->lang->redirect_registered = $this->lang->sprintf($this->lang->
                             redirect_registered, $this->mybb->settings['bbname'], $user_info['username']);
@@ -2861,7 +2864,8 @@ class MyBBIntegrator
 
         if ($firstpost) {
             if ($forumpermissions['candeletethreads'] == 1 || is_moderator($fid,
-                "candeleteposts")) {
+                    "candeleteposts")
+            ) {
                 delete_thread($tid);
                 mark_reports($tid, "thread");
                 $this->logModeratorAction($modlogdata, $this->lang->thread_deleted);
@@ -2871,16 +2875,17 @@ class MyBBIntegrator
             }
         } else {
             if ($forumpermissions['candeleteposts'] == 1 || is_moderator($fid,
-                "candeleteposts")) {
+                    "candeleteposts")
+            ) {
                 // Select the first post before this
                 delete_post($pid, $tid);
                 mark_reports($pid, "post");
                 $this->logModeratorAction($modlogdata, $this->lang->post_deleted);
                 $query = $this->db->simple_select("posts", "pid", "tid='{$tid}' AND dateline <= '{$post['dateline']}'",
                     array(
-                    "limit" => 1,
-                    "order_by" => "dateline",
-                    "order_dir" => "desc"));
+                        "limit" => 1,
+                        "order_by" => "dateline",
+                        "order_dir" => "desc"));
                 $next_post = $this->db->fetch_array($query);
                 return true;
             } else {
@@ -2921,7 +2926,7 @@ class MyBBIntegrator
         // If no ID is given, we check if there is a user with the specified username
         if (!is_numeric($user)) {
             $query = $this->db->simple_select('users', 'uid', 'username=\'' . $this->
-                dbEscape($user) . '\'');
+                    dbEscape($user) . '\'');
             $user_id = $this->db->fetch_field($query, 'uid', 0);
 
             // User does not exist? --> False
@@ -3103,6 +3108,7 @@ class MyBBIntegrator
 
         return true;
     }
+
     /**
      * Update content and information of a single post
      *
@@ -3135,8 +3141,8 @@ class MyBBIntegrator
      *
      * @param array $data Thread data
      * @param boolean $inline_errors Defines if we want a formatted error string or an array
-     * @return array|string 
-     * @return array|string When true it will return an array with threadID, postID and status of being visible - false = error array or inline string 
+     * @return array|string
+     * @return array|string When true it will return an array with threadID, postID and status of being visible - false = error array or inline string
      */
     function updateThread($data, $inline_errors = true)
     {
@@ -3255,7 +3261,8 @@ class MyBBIntegrator
         // Has the poll expired?
         $expiretime = $poll['dateline'] + $poll['timeout'];
         if ($poll['closed'] == 1 || $thread['closed'] == 1 || ($expiretime < TIME_NOW &&
-            $poll['timeout'])) {
+                $poll['timeout'])
+        ) {
             return $this->lang->error_pollclosed;
         }
 
@@ -3288,7 +3295,7 @@ class MyBBIntegrator
                         $votesql .= ",";
                     }
                     $votesql .= "('" . $poll['pid'] . "','" . $user_id . "','" . $this->db->
-                        escape_string($voteoption) . "', " . TIME_NOW . ")";
+                            escape_string($voteoption) . "', " . TIME_NOW . ")";
                     $votesarray[$voteoption - 1]++;
                     $numvotes = $numvotes + 1;
                 }
@@ -3298,7 +3305,7 @@ class MyBBIntegrator
                 return $this->lang->error_nopolloptions;
             }
             $votesql = "('" . $poll['pid'] . "','" . $user_id . "','" . $this->db->
-                escape_string($option) . "', " . TIME_NOW . ")";
+                    escape_string($option) . "', " . TIME_NOW . ")";
             $votesarray[$option - 1]++;
             $numvotes = $numvotes + 1;
         }
@@ -3319,7 +3326,7 @@ class MyBBIntegrator
         $updatedpoll = array(
             "votes" => $this->db->escape_string($voteslist),
             "numvotes" => intval($numvotes),
-            );
+        );
 
         $this->plugins->run_hooks("polls_vote_process");
 

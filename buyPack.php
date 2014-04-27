@@ -44,7 +44,7 @@ if (isset($_POST['user']) && isset($_POST['pass']) && isset($_POST['id'])) {
             "' AND (`status`=1 OR `status`=2) ORDER BY `id`");
         if (isset($paquetes[0])) {
             $discount = esDonador($paquetes[0]['package']);
-            $response["descuento"] = (1-$discount)*100;
+            $response["descuento"] = (1 - $discount) * 100;
         }
 
         $users = $MySQL->execute("SELECT `id`, `name` FROM inventorysql.`" . $tableusers . "`");
@@ -54,7 +54,7 @@ if (isset($_POST['user']) && isset($_POST['pass']) && isset($_POST['id'])) {
         $price = intval($discount * $pack[0]['cost']);
         if ($money >= $price) {
             $MyBBI->updateMoney($MyBBI->getUserId($user), ($money - $price), true);
-            $response["recoplas"]= ($money - $price);
+            $response["recoplas"] = ($money - $price);
             $items = $MySQL->execute("SELECT * FROM recompensas.infoItem WHERE id=" . intval($id));
             foreach ($items as $item) {
                 $correcto = 1;
@@ -95,18 +95,17 @@ if (isset($_POST['user']) && isset($_POST['pass']) && isset($_POST['id'])) {
 
             }
             $estado = "Dinero suficiente Uuid:" . $uuid;
-            $response['success']=1;
+            $response['success'] = 1;
         } else {
             $estado = "Sin Dinero";
             //"No tienes Suficiente Dinero";
-            $response['success']=-1;
-        }
-        ;
+            $response['success'] = -1;
+        };
         fputs($archivo, date(DATE_RFC822) . ": -Id venta: " . $id .
             " -PackName: " . $pack[0]['packName'] . " -User: " . $user .
             " -Estado: " . $estado . " -DineroPrevio:" . $money . " -Precio: " . $price . "\n");
         fclose($archivo);
-        
+
     }
 }
 
