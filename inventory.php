@@ -1,7 +1,7 @@
 <html>
 <head>    <!-- Le styles -->
     <link href="./inv/css/bootstrap.min.css" rel="stylesheet">
-
+    <link rel="stylesheet" href="./inv/css/shop.css" type="text/css">
     <link href="./inv/css/bootstrap-responsive.min.css" rel="stylesheet">
     <link href="./inv/css/site.css" rel="stylesheet">
     <link href="./inv/css/mcpictures.css" rel="stylesheet">
@@ -36,7 +36,7 @@ if (isset($_GET['user']) && isset($_GET['pass'])) {
         <div class="container-fluid">
             <div class="row-fluid">
                 <div class="span12">
-                    <div class="hero-unit" id="user-summary">
+                    <div class="hero-unit" id="user-summary" style="padding: 20px 10px 20px 10px;">
                         <h1>Inventario</h1>
                     </div>
                     <div id="user-data" class="collapse">
@@ -104,12 +104,11 @@ if (isset($_GET['user']) && isset($_GET['pass'])) {
                                 </table>
                             </div>
                             <!--/span-->
-                            <div class="span4 fade">
-                                <h2>Details</h2>
+                            <div class="span4 fade" style="display:none">
+                                <h2>Item</h2>
                                 <table class="table" id="slot-detail">
                                     <tr>
-                                        <th>Nombre</th>
-                                        <td class="name">0</td>
+                                        <td class="name inventory" colspan="2">0</td>
                                     </tr>
                                     <tr>
                                         <th>ID</th>
@@ -128,10 +127,6 @@ if (isset($_GET['user']) && isset($_GET['pass'])) {
                                         <td class="count">0</td>
                                     </tr>
                                 </table>
-                                <!--<div class="input-append">
-                                  <input class="input-medium" id="slot-addmore-count" type="number">
-                                  <button class="btn" type="button" id="slot-addmore-give" data-loading-text="Loading...">Add to pendings &raquo;</button>
-				</div>-->
                             </div>
                             <!--/span-->
                         </div>
@@ -145,26 +140,16 @@ if (isset($_GET['user']) && isset($_GET['pass'])) {
                                     <table class="table" id="pendings-table">
                                         <thead>
                                         <tr>
-                                            <th>Nombre</th>
-                                            <th>ID</th>
+                                            <th class="inventory">Nombre</th>
+                                            <!--<th>ID</th>
                                             <th>Data</th>
-                                            <th>Da&#241o</th>
-                                            <th>Cantidad</th>
+                                            <th>Da&#241o</th>-->
+                                            <th class="inventory">Cantidad</th>
 
                                         </tr>
                                         </thead>
                                         <tbody>
                                         </tbody>
-                                        <!--<tfoot>
-                                            <tr>
-                                                <td><select class="select-items add-item input-medium"></select></td>
-                                                <td class="add-item-showid"></td>
-                                                <td><input class="add-data input-small" type="number" value="0"></td>
-                                                <td><input class="add-damage input-small" type="number" value="0"></td>
-                                                <td><input class="add-count input-small" type="number" value="1"></td>
-                                                <td><button type="submit" class="btn btn-primary input-medium">Add &raquo;</button></td>
-					</tr>
-				</tfoot> -->
                                     </table>
                                 </form>
 
@@ -191,19 +176,31 @@ if (isset($_GET['user']) && isset($_GET['pass'])) {
               <!-- Placed at the end of the document so the pages load faster -->
         <script src="./inv/js/jquery.min.js"></script>
         <script src="./inv/js/bootstrap.min.js"></script>
-        <script>var current_userid;
+        <script>
+            function romanize (num) {
+                if (!+num)
+                    return false;
+                var digits = String(+num).split(""),
+                    key = ["","C","CC","CCC","CD","D","DC","DCC","DCCC","CM",
+                        "","X","XX","XXX","XL","L","LX","LXX","LXXX","XC",
+                        "","I","II","III","IV","V","VI","VII","VIII","IX"],
+                    roman = "",
+                    i = 3;
+                while (i--)
+                    roman = (key[+digits.pop() + (i * 10)] || "") + roman;
+                return Array(+digits.join("") + 1).join("M") + roman;
+            }
+
+            var current_userid;
             var current_username;
             $(function () {
 
                 $.getJSON('./inv/api.php', {'p': 'versions'}, function (data) {
+                    console.log(data);
                     $('#versions-display .plugin span').text(data.plugin);
                     $('#versions-display .web span').text(data.web);
                 });
-                /**
-                 *    $('#users-sidelist').on("click", "li.user-selector a", function(event){
- * 		$('#users-sidelist li.user-selector.active').removeClass('active');
- * $(this).parent().addClass('active');
- */
+
                 current_userid = <?php echo "'".$user[0]['id']."'"; ?>;
                 current_username = <?php echo "'".$user[0]['name']."'"; ?>;
                 $('#user-summary h1').text(current_username);
@@ -212,16 +209,33 @@ if (isset($_GET['user']) && isset($_GET['pass'])) {
                 load_pend();
                 $('#user-data').addClass('in');
                 $('#slot-detail').parent().removeClass('in');
-                /**
-                 * });
-                 */
                 $('#inventory-table').on("click", "td.clickable", function (event) {
                     $('#slot-detail').parent().addClass('in');
+                    $('#slot-detail').parent().css("display","initial");
+                    $('#slot-detail').empty();
+                    $('#slot-detail').append('<tr><td class="name inventory" colspan="2">0</td></tr>');
                     $('#slot-detail .name').html($(this).data('name')).text();
-                    $('#slot-detail .id').text($(this).data('id'));
-                    $('#slot-detail .data').text($(this).data('data'));
-                    $('#slot-detail .damage').text($(this).data('damage'));
-                    $('#slot-detail .count').text($(this).data('count'));
+                    console.log($(this).data('enchants'));
+                    enchants=$(this).data('enchants');
+                    for (var ench in enchants) {
+                        if (enchants.hasOwnProperty(ench)) {
+                            console.log(enchants[ench]);
+                            $('#slot-detail').append('<tr><td class="inventory" colspan="2" style="color: #aaaaaa;">'+enchants[ench].name+' '+romanize(enchants[ench].level)+'</td></tr>');
+                        }
+                    }
+                    metas=$(this).data('metas');
+                    for (var meta in metas) {
+                        if (metas.hasOwnProperty(meta)) {
+                            console.log(metas[meta]);
+                            $('#slot-detail').append('<tr><td class="inventory" colspan="2">'+metas[meta]+'</td></tr>');
+                        }
+                    }
+                    $('#slot-detail').append('<tr><th class="inventory" >Cantidad:</th><td class="inventory" >x'+$(this).data('count')+'</td></tr>');
+
+                    //$('#slot-detail .id').text($(this).data('id'));
+                    //$('#slot-detail .data').text($(this).data('data'));
+                    //$('#slot-detail .damage').text($(this).data('damage'));
+                    //$('#slot-detail .count').text($(this).data('count'));
                 });
                 $('#pendings-table').on("click", "a.details", function (event) {
                     event.preventDefault();
@@ -229,6 +243,7 @@ if (isset($_GET['user']) && isset($_GET['pass'])) {
 
                 /** Initial loading of item names **/
                 $.getJSON('./inv/api.php', {'p': 'items'}, function (data) {
+                    console.log(data);
                     $('.select-items').empty();
                     $.each(data.items, function (index, value) {
                         $('.select-items').append('<option value="' + index + '">' + value + '</option>');
@@ -258,6 +273,7 @@ if (isset($_GET['user']) && isset($_GET['pass'])) {
             function load_inv() {
                 $('#inventory-table td').removeClass('clickable').text('');
                 $.getJSON('./inv/api.php', {'p': 'inv', 'u': current_userid, 'w': 'world'}, function (data) {
+                    console.log(data);
                     $.each(data.inv, function (index, value) {
                         $el = $('#inventory-table .slot-' + value.slot);
                         itm = '<span class="mc-';
@@ -274,6 +290,8 @@ if (isset($_GET['user']) && isset($_GET['pass'])) {
                         $el.data('damage', value.damage);
                         $el.data('count', value.count);
                         $el.data('id', value.item);
+                        $el.data('enchants', value.ench);
+                        $el.data('metas', value.meta);
 
                     });
                 });
@@ -281,19 +299,21 @@ if (isset($_GET['user']) && isset($_GET['pass'])) {
             function load_pend() {
                 $('#pendings-table tbody').empty();
                 $.getJSON('./inv/api.php', {'p': 'pendings', 'u': current_userid, 'w': 'world'}, function (data) {
+                    console.log(data);
                     $.each(data.pendings, function (index, value) {
-                        $el = $('#pendings-table tbody').append('<tr><td>' + value.item_name + '</td><td>' + value.item + '</td><td>' + value.data + '</td><td>' + value.damage + '</td><td>' + value.count + '</td></tr>');
+                        $el = $('#pendings-table tbody').append('<tr><td class="inventory">' + value.item_name + '</td><td class="inventory">x' + value.count + '</td></tr>');
                         $el.data('name', value.item_name);
-                        $el.data('data', value.data);
-                        $el.data('damage', value.damage);
+                        //$el.data('data', value.data);
+                        //$el.data('damage', value.damage);
                         $el.data('count', value.count);
-                        $el.data('id', value.item);
+                        //$el.data('id', value.item);
 
                     });
                 });
             }</script>
 
-    <?php }
+    <?php
+    }
 } ?>
 
 </div>

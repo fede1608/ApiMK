@@ -1,0 +1,88 @@
+/*
+Template Name: Professional Web2
+Coded By: Design Coder - http://www.design-coder.com/
+Design By: http://psd.tutsplus.com/tutorials/interface-tutorials/create-a-professional-web-2-0-layout/
+Licence: <a href="http://creativecommons.org/licenses/by-sa/3.0/">Creative Commons Attribution-Share Alike 3.0 Unported License</a>
+*/
+@font-face
+{
+    font-family: Minecraftia;
+    src: url('Minecraftia.ttf');
+}
+.inventory {font-family:'Minecraftia';background-color: rgba(30,15,30,0.95) !important;text-shadow: 0.12em 0.12em #333;text-align: center !important;-moz-border-radius: 7px;border-radius: 7px;color:white;}
+
+/* ---SLIDER---*/
+
+h2#latestwork{display:block; height:100px; padding:0 0 0 110px; font-size:40px; overflow:hidden;}
+h2#latestwork span{color:#2D3032; background-color:transparent;}
+#topbar #slider{position:relative; width:960px; height:380px; margin:0; padding:0px 0 0 0; overflow:hidden; z-index:1;}
+#topbar #slider ul{margin:0; padding:0; list-style:none;}
+#topbar #slider #slidernav{
+	position:absolute;
+	top:174px;
+	width:960px;
+	z-index:100;
+}
+#topbar #slider #slidernav li#prev{float:left;}
+#topbar #slider #slidernav li#next{float:right;}
+#topbar #slider #slidernav li a{display:block; width:50px; height:50px; text-indent:-9999em;}
+#topbar #slider #slidernav li#prev a{background-image:url("../images/prev.png");}
+#topbar #slider #slidernav li#next a{background-image:url("../images/next.png");}
+
+/* ---CONTENT AREA---*/
+
+#hpagesplitter{display:block; width:100%; height:32px; margin:0 0 30px 0; clear:both; background:url("../images/hpagesplitter_bg.png") top center no-repeat;}
+#container .bg_top, #container .bg_bot{display:block; width:100%; background:url("../images/homepage_spacer.png") top left repeat-x;}
+#container .bg_bot{background-position:bottom left; padding:0 0 20px 0;}
+
+/* SERVICES */
+
+#container #featured{display:block; width:100%; margin:0 0 23px 0;}
+#container #featured p, #container #featured h2{margin:0 0 20px 0; padding:0;}
+#container #featured .holder{display:block; float:left; width:150px; padding:0 10px; margin-bottom:20px; margin-top:10px;}
+#container #featured .readmore{margin:0;}
+#container #featured img{ width:90; height:90}
+#container #featured h2{ font-size:16px}
+#container #featured .texto { height:140px}
+
+
+/* COMPANY INFORMATION */
+
+#container #companyinfo{display:block; width:100%; margin-bottom:-20px;}
+#container #companyinfo .fl_left, #container #companyinfo .fl_right{display:block; width:320px;}
+#container #companyinfo h2, #container #companyinfo p, #container #companyinfo ul{margin:0 0 20px 0; padding:0; list-style:none;}
+
+#container #companyinfo .fl_left .cite{display:block; margin:0; padding:6px 0 10px 60px; font-size:12px; font-weight:bold; color:#80AA47; background:url("../images/cite.png") top left no-repeat #E8E8E8;}
+#container #companyinfo .fl_left .cite strong{color:#515151; background-color:#E8E8E8;}
+
+#container #companyinfo .fl_right ul#teammembers a{color:#515151; background-color:#E8E8E8;}
+#container #companyinfo .fl_right ul#teammembers a:hover{color:#7BA344; background-color:#E8E8E8;}
+#container #companyinfo .fl_right ul#teammembers img{border:3px solid #3E3E3E; margin:0 0 10px 0;}
+#container #companyinfo .fl_right ul#teammembers li{display:block; float:left; margin:0 25px 0 0; padding:0; width:91px;}
+#container #companyinfo .fl_right ul#teammembers li.last{margin-right:0;}
+#container #companyinfo .fl_right ul#teammembers a.teammember{opacity:.5;}
+#container #companyinfo .fl_right ul#teammembers a.teammember:hover{opacity:1;}
+#container #companyinfo .fl_right ul#teammembers ul{margin:10px 0 0 0;}
+#container #companyinfo .fl_right ul#teammembers li ul li{width:24px; height:24px; margin:0 8px 0 0;}
+#container #companyinfo .fl_right ul#teammembers li ul li a{display:block; width:24px; height:24px; background:url("../images/social_sprite.png") top left no-repeat; text-indent:-9999em;}
+#container #companyinfo .fl_right ul#teammembers li.twitter a{background-position:0 0;}
+#container #companyinfo .fl_right ul#teammembers li.twitter a:hover{background-position:0 -24px;}
+#container #companyinfo .fl_right ul#teammembers li.linkedin a{background-position:-24px 0;}
+#container #companyinfo .fl_right ul#teammembers li.linkedin a:hover{background-position:-24px -24px;}
+#container #companyinfo .fl_right ul#teammembers li.facebook a{background-position:-48px 0;}
+#container #companyinfo .fl_right ul#teammembers li.facebook a:hover{background-position:-48px -24px;}
+
+
+#menu { padding: 0; }
+#menu li { display: inline;}
+#menu li a { background: #80AA47;; padding: 10px; float:left; border-right: 1px solid #ccf; border-bottom: none; text-decoration: none; color: #000; font-weight: bold; width:115px; text-align:center;}
+#menu li.active a { background: #eef; }
+.content { float: left; clear: both; border: 1px solid #ccf; border-top: none; border-left: none; background: #eef; padding: 10px 20px 20px; width: 680px; min-height:845px; }
+
+/*CSS para los elementos del shop (propio)*/
+#contenedor {display:block; width:150px;height:380px;margin:20px 10px 20px 10px; float:left;}
+#contenedor img{width:120; height:120; text-align:center; margin: 0 15px 10px 15px}
+#contenedor h2 {font-size:16px; height:40px;}
+#contenedor p {height:135Px;}
+#contenedor .readmore{margin:0;}
+#contenedor p, #contenedor h2{margin:0 0 20px 0; padding:0;}
