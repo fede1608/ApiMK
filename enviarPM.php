@@ -9,14 +9,11 @@ $MyBBI = new MyBBIntegrator($mybb, $db, $cache, $plugins, $lang, $config);
 //$MySQL = new SQL($host, $usernombre, $pass, $dbRecom);
 
 $response["success"] = 0;
-
-if (isset($_POST['user']) && isset($_POST['pass']) && isset($_POST['title']) &&
-    isset($_POST['content']) && isset($_POST['to'])
-) {
+if (isset($_POST['user']) && isset($_POST['pass']) && isset($_POST['title']) && isset($_POST['content']) && isset($_POST['to'])) {
     $user = $_POST['user'];
     $pass = $_POST['pass'];
-    $title = $_POST['title'];
-    $content = $_POST['content'];
+    $title = utf8_encode($_POST['title']);
+    $content = utf8_encode($_POST['content']);
     $to = $_POST['to'];
     $toid = $MyBBI->getUserId($to);
     if (!isset($toid)) {

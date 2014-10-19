@@ -15,15 +15,15 @@ if (isset($_POST['user']) && isset($_POST['pass']) && isset($_POST['titulo']) &&
     $pass = $_POST['pass'];
     if ($MyBBI->checkUserPass($user, $pass)) {
         $involucrados = $_POST['involucrados'];
-        $titulo = $_POST['titulo'];
+        $titulo = utf8_encode($_POST['titulo']);
         $fecha = $_POST['fecha'];
         $hora = $_POST['horario'];
-        $mundo = $_POST['mundo'];
-        $ciudad = $_POST['ciudad'];
+        $mundo = utf8_encode($_POST['mundo']);
+        $ciudad = utf8_encode($_POST['ciudad']);
         $tipo = $_POST['tipo'];
-        $normas = $_POST['reglas'];
-        $explicacion = $_POST['explicacion'];
-        $solucion = $_POST['solucion'];
+        $normas = utf8_encode($_POST['reglas']);
+        $explicacion = utf8_encode($_POST['explicacion']);
+        $solucion = utf8_encode($_POST['solucion']);
 
         $thread = Array(
             'savedraft' => false,
