@@ -12,10 +12,12 @@ $response["success"] = 1;
 $response["players"] = Array();
 
 
-$json = file_get_contents('http://api.iamphoenix.me/list/?server_ip=minekkit.com');
-$obj = json_decode($json);
-$response["players"] = explode(",", $obj->players);
+include('libs/MinecraftQuery.class.php');
+$Query = new MinecraftQuery();
+$Query->Connect("minekkit.com", "25565");
+$players = $Query->GetPlayers();
 
+$response["players"]=$players;
 
 echo json_encode($response);
 
