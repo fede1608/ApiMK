@@ -39,72 +39,7 @@ $response["mensaje"]="";
 
 $msgExit = '';
 
-function isPlayerOnline($p)
-{
-    try {
-        $a = new MinecraftQuery();
-        $a->Connect("localhost");
-        foreach ($a->GetPlayers() as $player) {
-            if (strtolower($player) == strtolower($p)) return true;
-        }
-    } catch (Exception $e) {
-        return false;
-    }
-    return false;
-}
-
-
-//Se revisa si el usuario esta logeado con la clase MyBBI
-/**
- * @param $id
- * @param $player
- * @return ItemsPack|RandomSet|RandomSword
- */
-function getPack($id, $player)
-{
-    switch ($id) {
-        case -1:
-            $pack = new RandomSword($player);
-            break;
-        case -2:
-            $pack = new RandomSet($player);
-            break;
-        case -3:
-            $pack = new RandomSetCuero($player);
-            break;
-        case -4:
-            $pack = new RandomBow($player);
-            break;
-        case 15000:
-            $pack = new Donador15Dias($player);
-            break;
-        case 15001:
-            $pack = new DonadorPlus15Dias($player);
-            break;
-        case 15002:
-            $pack = new DonadorPlus1Dia($player);
-            break;
-        case 15003:
-            $pack = new DonadorPlus3Dias($player);
-            break;
-        case 15004:
-            $pack = new DonadorPlus7Dias($player);
-            break;
-        case 15005:
-            $pack = new Donador1Dia($player);
-            break;
-        case 15006:
-            $pack = new Donador3Dias($player);
-            break;
-        case 15007:
-            $pack = new Donador7Dias($player);
-            break;
-        default:
-            $pack = new ItemsPack($id, $player);
-            break;
-    }
-    return $pack;
-}
+require_once '../recompensas/functions.php';
 
 if (isset($_POST['user']) && isset($_POST['pass']) && isset($_POST['id'])) {
     $user = $_POST['user'];
