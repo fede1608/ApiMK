@@ -169,15 +169,15 @@ function gen_uuid()
 
 function MineToWeb($minetext)
 {
-    //$minetext=str_replace("\u00a7","§",$minetext);
+    //$minetext=str_replace("\u00a7","Â§",$minetext);
     $minetext = utf8_decode($minetext);
-    preg_match_all("/[^§&]*[^§&]|[§&][0-9a-z][^§&]*/", $minetext, $brokenupstrings);
+    preg_match_all("/[^Â§&]*[^Â§&]|[Â§&][0-9a-z][^Â§&]*/", $minetext, $brokenupstrings);
     $returnstring = "";
     foreach ($brokenupstrings as $results) {
         $ending = '';
         foreach ($results as $individual) {
-            $code = preg_split("/[&§][0-9a-z]/", $individual);
-            preg_match("/[&§][0-9a-z]/", $individual, $prefix);
+            $code = preg_split("/[&Â§][0-9a-z]/", $individual);
+            preg_match("/[&Â§][0-9a-z]/", $individual, $prefix);
             if (isset($prefix[0])) {
                 $actualcode = substr($prefix[0], 1);
                 switch ($actualcode) {
@@ -287,13 +287,13 @@ function MineToWeb($minetext)
     return $returnstring;
 }
 //Test Data //
-//$text1 = '§r§0k §kMinecraft§rl §lMinecraft§rm §mMinecraft§rn §nMinecraf§ro §oMinecraft§rr §rMinecraft§r§00 §11 §22 §33 §44 §55 &l&66 §77 §88 §99 §aa §bb §cc §dd §ee §ff§bA §5&lminecraft &l§5minecraft &r§9MOTD§6[MegaKraft]§4[Factions]§8[PvP]§2[Economy]';
+//$text1 = 'Â§rÂ§0k Â§kMinecraftÂ§rl Â§lMinecraftÂ§rm Â§mMinecraftÂ§rn Â§nMinecrafÂ§ro Â§oMinecraftÂ§rr Â§rMinecraftÂ§rÂ§00 Â§11 Â§22 Â§33 Â§44 Â§55 &l&66 Â§77 Â§88 Â§99 Â§aa Â§bb Â§cc Â§dd Â§ee Â§ffÂ§bA Â§5&lminecraft &lÂ§5minecraft &rÂ§9MOTDÂ§6[MegaKraft]Â§4[Factions]Â§8[PvP]Â§2[Economy]';
 //echo MineToWeb($text1);
 
 
 /* items names */
 $items[] = array();
-$items_version = "1.4.5";
+$items_version = "1.5.2";
 
 /************************************
 * Setup blocks and items name here
@@ -303,25 +303,36 @@ $items_version = "1.4.5";
 $items[0][0] = 'Air';
 $items[1][0] = 'Stone';
 $items[2][0] = 'Grass';
+
 $items[3][0] = 'Dirt';
+$items[3][1] = 'Coarse Dirt';
+$items[3][2] = 'Podzol';
+
 $items[4][0] = 'Cobblestone';
 
 $items[5][0] = 'Wooden Plank (Oak)';
 $items[5][1] = 'Wooden Plank (Pine)';
 $items[5][2] = 'Wooden Plank (Birch)';
 $items[5][3] = 'Wooden Plank (Jungle)';
+$items[5][4] = 'Wooden Plank (Acacia)';
+$items[5][5] = 'Wooden Plank (Dark Oak)';
 
 $items[6][0] = 'Sapling (Oak)';
 $items[6][1] = 'Sapling (Pine)';
 $items[6][2] = 'Sapling (Birch)';
 $items[6][3] = 'Sapling (Jungle)';
+$items[6][4] = 'Sapling (Acacia)';
+$items[6][5] = 'Sapling (Dark Oak)';
 
 $items[7][0] = 'Bedrock';
 $items[8][0] = 'Water';
 $items[9][0] = 'Stationary Water';
 $items[10][0] = 'Lava';
 $items[11][0] = 'Stationary Lava';
+
 $items[12][0] = 'Sand';
+$items[12][1] = 'Red Sand';
+
 $items[13][0] = 'Gravel';
 $items[14][0] = 'Gold Ore';
 $items[15][0] = 'Iron Ore';
@@ -331,6 +342,8 @@ $items[17][0] = 'Log (Oak)';
 $items[17][1] = 'Log (Pine)';
 $items[17][2] = 'Log (Birch)';
 $items[17][3] = 'Log (Jungle)';
+$items[17][3] = 'Log (Acacia)';
+$items[17][3] = 'Log (Dark Oak)';
 
 $items[18][0] = 'Leaves (Oak)';
 $items[18][1] = 'Leaves (Pine)';
@@ -339,8 +352,8 @@ $items[18][3] = 'Leaves (Jungle)';
 
 $items[19][0] = 'Sponge';
 $items[20][0] = 'Glass';
-$items[21][0] = 'Lapis Ore';
-$items[22][0] = 'Lapis Block';
+$items[21][0] = 'Lapislazuli Ore';
+$items[22][0] = 'Lapislazuli Block';
 $items[23][0] = 'Dispenser';
 
 $items[24][0] = 'Sandstone';
@@ -381,7 +394,16 @@ $items[35][15] = 'Black Wool';
 
 $items[36][0] = 'Piston Moving Piece';
 $items[37][0] = 'Dandelion (Yellow Flower)';
+
 $items[38][0] = 'Rose';
+$items[38][1] = 'Blue Orchid';
+$items[38][2] = 'Allium';
+$items[38][4] = 'Red Tulip';
+$items[38][5] = 'Orange Tulip';
+$items[38][6] = 'White Tulip';
+$items[38][7] = 'Pink Tulip';
+$items[38][8] = 'Margarita';
+
 $items[39][0] = 'Brown Mushroom';
 $items[40][0] = 'Red Mushroom';
 $items[41][0] = 'Gold Block';
@@ -393,6 +415,10 @@ $items[43][2] = 'Wooden Slab (Double)';
 $items[43][3] = 'Cobblestone Slab (Double)';
 $items[43][4] = 'Brick Slab (Double)';
 $items[43][5] = 'Stone Brick Slab (Double)';
+$items[43][6] = 'Nether Brick Slab (Double)';
+$items[43][7] = 'Quartz Slab (Double)';
+$items[43][8] = 'Smooth Stone Slab (Double)';
+$items[43][9] = 'Smooth Sand Slab (Double)';
 
 $items[44][0] = 'Stone Slab';
 $items[44][1] = 'Sandstone Slab';
@@ -400,6 +426,8 @@ $items[44][2] = 'Wooden Slab';
 $items[44][3] = 'Cobblestone Slab';
 $items[44][4] = 'Brick Slab';
 $items[44][5] = 'Stone Brick Slab';
+$items[44][6] = 'Nether Brick Slab';
+$items[44][7] = 'Quartz Slab';
 
 $items[45][0] = 'Brick';
 $items[46][0] = 'Tnt';
@@ -451,12 +479,32 @@ $items[91][0] = 'Jack O Lantern';
 $items[92][0] = 'Cake Block';
 $items[93][0] = 'Diode Block Off';
 $items[94][0] = 'Diode Block On';
-$items[95][0] = 'Locked Chest';
+
+$items[95][0] = 'Stained Glass (White)';
+$items[95][1] = 'Stained Glass (Orange)';
+$items[95][2] = 'Stained Glass (Magenta)';
+$items[95][3] = 'Stained Glass (Light Blue)';
+$items[95][4] = 'Stained Glass (Yellow)';
+$items[95][5] = 'Stained Glass (Lime)';
+$items[95][6] = 'Stained Glass (Pink)';
+$items[95][7] = 'Stained Glass (Gray)';
+$items[95][8] = 'Stained Glass (Light Grey)';
+$items[95][9] = 'Stained Glass (Cyan)';
+$items[95][10] = 'Stained Glass (Purple)';
+$items[95][11] = 'Stained Glass (Blue)';
+$items[95][12] = 'Stained Glass (Brown)';
+$items[95][13] = 'Stained Glass (Green)';
+$items[95][14] = 'Stained Glass (Red)';
+$items[95][15] = 'Stained Glass (Black)';
+
 $items[96][0] = 'Trap Door';
 
 $items[97][0] = 'Silverfish Stone';
 $items[97][1] = 'Silverfish Cobblestone';
 $items[97][2] = 'Silverfish Stone Brick';
+$items[97][3] = 'Silverfish Mossy Stone Brick';
+$items[97][4] = 'Silverfish Cracked Stone Brick';
+$items[97][5] = 'Silverfish Chiseled Stone Brick';
 
 $items[98][0] = 'Stone Brick';
 $items[98][1] = 'Mossy Stone Brick';
@@ -494,11 +542,15 @@ $items[125][0] = 'Oak-Wood Slab (Double)';
 $items[125][1] = 'Pine-Wood Slab (Double)';
 $items[125][2] = 'Birch-Wood Slab (Double)';
 $items[125][3] = 'Jungle-Wood Slab (Double)';
+$items[125][4] = 'Acacia Slab (Double)';
+$items[125][5] = 'Dark Oak Slab (Double)';
 
 $items[126][0] = 'Oak-Wood Slab';
 $items[126][1] = 'Pine-Wood Slab';
 $items[126][2] = 'Birch-Wood Slab';
 $items[126][3] = 'Jungle-Wood Slab';
+$items[126][3] = 'Acacia Slab';
+$items[126][3] = 'Dark Oak Slab';
 
 $items[127][0] = 'Cocoa Plant';
 $items[128][0] = 'Sandstone Stairs';
@@ -520,6 +572,107 @@ $items[140][0] = 'Flower Pot (Block)';
 $items[141][0] = 'Carrots (Crop)';
 $items[142][0] = 'Potatoes (Crop)';
 $items[143][0] = 'Button (Wood)';
+
+
+$items[144][0] = 'Head Block (Skeleton)';
+$items[144][1] = 'Head Block (Wither)';
+$items[144][2] = 'Head Block (Zombie)';
+$items[144][3] = 'Head Block (Steve)';
+$items[144][4] = 'Head Block (Creeper)';
+
+$items[145][0] = 'Anvil';
+$items[145][1] = 'Anvil (Slightly Damaged)';
+$items[145][2] = 'Anvil (Very Damaged)';
+
+$items[146][0] = 'Trapped Chest';
+$items[147][0] = 'Weighted Pressure Plate (light)';
+$items[148][0] = 'Weighted Pressure Plate (heavy)';
+$items[149][0] = 'Redstone Comparator (off)';
+$items[150][0] = 'Redstone Comparator (on)';
+$items[151][0] = 'Daylight Sensor';
+$items[152][0] = 'Block of Redstone';
+$items[153][0] = 'Nether Quartz Ore';
+$items[154][0] = 'Hopper';
+
+$items[155][0] = 'Quartz Block';
+$items[155][1] = 'Chiseled Quartz Block';
+$items[155][2] = 'Pilar Quartz Block';
+
+$items[156][0] = 'Quartz Stairs';
+$items[157][0] = 'Rails Activator';
+$items[158][0] = 'Dropper';
+
+$items[159][0] = 'Stained Clay (White)';
+$items[159][1] = 'Stained Clay (Orange)';
+$items[159][2] = 'Stained Clay (Magenta)';
+$items[159][3] = 'Stained Clay (Light Blue)';
+$items[159][4] = 'Stained Clay (Yellow)';
+$items[159][5] = 'Stained Clay (Lime)';
+$items[159][6] = 'Stained Clay (Pink)';
+$items[159][7] = 'Stained Clay (Gray)';
+$items[159][8] = 'Stained Clay (Light Gray)';
+$items[159][9] = 'Stained Clay (Cyan)';
+$items[159][10] = 'Stained Clay (Purple)';
+$items[159][11] = 'Stained Clay (Blue)';
+$items[159][12] = 'Stained Clay (Brown)';
+$items[159][13] = 'Stained Clay (Green)';
+$items[159][14] = 'Stained Clay (Red)';
+$items[159][15] = 'Stained Clay (Black)';
+
+$items[160][0] = 'Stained Glass Pane (White)';
+$items[160][1] = 'Stained Glass Pane (Orange)';
+$items[160][2] = 'Stained Glass Pane (Magenta)';
+$items[160][3] = 'Stained Glass Pane (Light Blue)';
+$items[160][4] = 'Stained Glass Pane (Yellow)';
+$items[160][5] = 'Stained Glass Pane (Lime)';
+$items[160][6] = 'Stained Glass Pane (Pink)';
+$items[160][7] = 'Stained Glass Pane (Gray)';
+$items[160][8] = 'Stained Glass Pane (Light Gray)';
+$items[160][9] = 'Stained Glass Pane (Cyan)';
+$items[160][10] = 'Stained Glass Pane (Purple)';
+$items[160][11] = 'Stained Glass Pane (Blue)';
+$items[160][12] = 'Stained Glass Pane (Brown)';
+$items[160][13] = 'Stained Glass Pane (Green)';
+$items[160][14] = 'Stained Glass Pane (Red)';
+$items[160][15] = 'Stained Glass Pane (Black)';
+
+
+$items[161][0] = 'Leaves (Acacia)';
+$items[161][1] = 'Leaves (Dark Oak)';
+$items[162][0] = 'Wood (Acacia Oak)';
+$items[162][1] = 'Wood (Dark Oak)';
+$items[163][0] = 'Wooden Stairs (Acacia)';
+$items[164][0] = 'Wooden Stairs (Dark Oak)';
+
+$items[170][0] = 'Hay Bale';
+
+$items[171][0] = 'Stained Carpet (White)';
+$items[171][1] = 'Stained Carpet (Orange)';
+$items[171][2] = 'Stained Carpet (Magenta)';
+$items[171][3] = 'Stained Carpet (Light Blue)';
+$items[171][4] = 'Stained Carpet (Yellow)';
+$items[171][5] = 'Stained Carpet (Lime)';
+$items[171][6] = 'Stained Carpet (Pink)';
+$items[171][7] = 'Stained Carpet (Gray)';
+$items[171][8] = 'Stained Carpet (Light Gray)';
+$items[171][9] = 'Stained Carpet (Cyan)';
+$items[171][10] = 'Stained Carpet (Purple)';
+$items[171][11] = 'Stained Carpet (Blue)';
+$items[171][12] = 'Stained Carpet (Brown)';
+$items[171][13] = 'Stained Carpet (Green)';
+$items[171][14] = 'Stained Carpet (Red)';
+$items[171][15] = 'Stained Carpet (Black)';
+
+$items[172][0] = 'Hardened Clay';
+$items[173][0] = 'Block of Coal';
+$items[174][0] = 'Packed Ice';
+
+$items[175][0] = 'Sunflower';
+$items[175][1] = 'Lilac';
+$items[175][2] = 'Double Tallgrass';
+$items[175][3] = 'Large Fern';
+$items[175][4] = 'Rose Bush';
+$items[175][5] = 'Peony';
 
 //damageable
 $items[256][0] = 'Iron Shovel';
@@ -630,8 +783,16 @@ $items[345][0] = 'Compass';
 $items[346][0] = 'Fishing Rod';
 $items[347][0] = 'Watch';
 $items[348][0] = 'Glowstone Dust';
+
 $items[349][0] = 'Raw Fish';
+$items[349][1] = 'Raw Salmon';
+$items[349][2] = 'Raw Clownfish';
+$items[349][2] = 'Raw Putterfish';
+
 $items[350][0] = 'Cooked Fish';
+$items[350][1] = 'Cooked Salmon';
+$items[350][2] = 'Cooked Clownfish';
+$items[350][3] = 'Cooked Putterfish';
 
 $items[351][0] = 'Ink Sack';
 $items[351][1] = 'Rose Red Dye';
@@ -673,9 +834,9 @@ $items[371][0] = 'Gold Nugget';
 $items[372][0] = 'Nether Stalk';
 //potions
 $items[373][0] = 'Water Bottle';
-$items[373][16] = '';
-$items[373][32] = '';
-$items[373][64] = '';
+$items[373][16] = 'Awkward Potion';
+$items[373][32] = 'Thick Potion';
+$items[373][64] = 'Mundane';
 $items[373][8193] = 'Regeneration Potion (0:45)';
 $items[373][8194] = 'Swiftness Potion (3:00)';
 $items[373][8195] = 'Fire Resistance Potion (3:00)';
@@ -762,6 +923,7 @@ $items[383][94] = 'Spawn Egg(Squid)';
 $items[383][95] = 'Spawn Egg(Wolf)';
 $items[383][96] = 'Spawn Egg(Moshroom)';
 $items[383][98] = 'Spawn Egg(Ocelot)';
+$items[383][100] = 'Spawn Egg(Horse)';
 $items[383][120] = 'Spawn Egg(Villager)';
 
 $items[384][0] = 'Bottle Exp';
@@ -780,6 +942,31 @@ $items[393][0] = 'Baked Potato';
 $items[394][0] = 'Poisonous Potato';
 $items[395][0] = 'Empty Map';
 $items[396][0] = 'Golden Carrot';
+
+$items[397][0] = 'Head (Skeleton)';
+$items[397][1] = 'Head (Wither)';
+$items[397][2] = 'Head (Zombie)';
+$items[397][3] = 'Head (Steve)';
+$items[397][4] = 'Head (Creeper)';
+
+$items[398][0] = 'Carrot on a stick';
+$items[399][0] = 'Nether Star';
+$items[400][0] = 'Pumpkin Pie';
+$items[401][0] = 'FireWork Rocket';
+$items[402][0] = 'FireWork Star';
+$items[403][0] = 'Enchanted Book';
+$items[404][0] = 'Redstone Comparator';
+$items[405][0] = 'Nether Brick (item)';
+$items[406][0] = 'Nether Quartz';
+$items[407][0] = 'Minecart (TNT)';
+$items[408][0] = 'Minecart (Hopper)';
+
+$items[417][0] = 'Iron Horse Armor';
+$items[418][0] = 'Gold Horse Armor';
+$items[419][0] = 'Diamond Horse Armor';
+$items[420][0] = 'Lead';
+$items[411][0] = 'Name Tag';
+$items[422][0] = 'Minecart (Command Block)';
 
 $items[2256][0] = 'Gold Record';
 $items[2257][0] = 'Green Record';

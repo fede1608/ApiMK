@@ -517,6 +517,304 @@ class MyBBIntegrator
         return $posthandler->insert_thread();
     }
 
+
+
+    /**
+     * Inserts a thread into the database with attachments
+      *
+     * @param array $data Thread data
+     * @param array $attach Attachments data
+     * @param boolean $inline_errors Defines if we want a formatted error string or an array
+     * @return array|string When true it will return an array with threadID, postID and status of being visible - false = error array or inline string
+     */
+    function createThreadWithAttach($data, $attach, $inline_errors = true)
+    {
+        require_once MYBB_ROOT . 'inc/functions_post.php';
+        require_once MYBB_ROOT . 'inc/functions_upload.php';
+        require_once MYBB_ROOT . '/inc/datahandlers/post.php';
+        $posthandler = new PostDataHandler('insert');
+        $posthandler->action = 'thread';
+        $posthandler->set_data($data);
+        if (!$posthandler->validate_thread()) {
+            $errors = $posthandler->get_friendly_errors();
+            return ($inline_errors === true) ? inline_error($errors) : $errors;
+        }
+        $threadinfo= $posthandler->insert_thread();
+        $pid=$threadinfo['pid'];
+        $tid=$threadinfo['tid'];
+        $forum['fid']=$data['fid'];
+        $threadinfo['attach']=array();
+        foreach($attach as $att) {
+            //$att['type']="image/jpeg";
+            $threadinfo['attach'][] = $this->upload_attachment2($att,$pid, $tid, $forum,$data, false);
+        }
+        return $threadinfo;
+    }
+
+    /**
+     * Upload an attachment in to the file system
+     *
+     * @param array Attachment data (as fed by PHPs $_FILE)
+     * @param boolean Whether or not we are updating a current attachment or inserting a new one
+     * @return array Array of attachment data if successful, otherwise array of error data
+     */
+    function upload_attachment2($attachment, $pid, $tid, $forum,$data, $update_attachment=false)
+    {
+        global $db, $theme, $templates, $posthash,  $lang, $plugins, $cache;
+        $mybb=$this->mybb;
+        $posthash = $db->escape_string($data['posthash']);
+        if(isset($attachment['error']) && $attachment['error'] != 0)
+        {
+            $ret['error'] = $lang->error_uploadfailed.$lang->error_uploadfailed_detail;
+            switch($attachment['error'])
+            {
+                case 1: // UPLOAD_ERR_INI_SIZE
+                    $ret['error'] .= $lang->error_uploadfailed_php1;
+                    break;
+                case 2: // UPLOAD_ERR_FORM_SIZE
+                    $ret['error'] .= $lang->error_uploadfailed_php2;
+                    break;
+                case 3: // UPLOAD_ERR_PARTIAL
+                    $ret['error'] .= $lang->error_uploadfailed_php3;
+                    break;
+                case 4: // UPLOAD_ERR_NO_FILE
+                    $ret['error'] .= $lang->error_uploadfailed_php4;
+                    break;
+                case 6: // UPLOAD_ERR_NO_TMP_DIR
+                    $ret['error'] .= $lang->error_uploadfailed_php6;
+                    break;
+                case 7: // UPLOAD_ERR_CANT_WRITE
+                    $ret['error'] .= $lang->error_uploadfailed_php7;
+                    break;
+                default:
+                    $ret['error'] .= $lang->sprintf($lang->error_uploadfailed_phpx, $attachment['error']);
+                    break;
+            }
+            return $ret;
+        }
+
+        if(!is_uploaded_file($attachment['tmp_name']) || empty($attachment['tmp_name']))
+        {
+            $ret['error'] = $lang->error_uploadfailed.$lang->error_uploadfailed_php4;
+            return $ret;
+        }
+
+        $ext = get_extension($attachment['name']);
+
+        // Check if we have a valid extension
+        $query = $db->simple_select("attachtypes", "*", "extension='".$db->escape_string($ext)."'");
+        $attachtype = $db->fetch_array($query);
+        if(!$attachtype['atid'])
+        {
+            $ret['error'] = $lang->error_attachtype;
+            //return $ret;
+        }
+
+        // Check the size
+        if($attachment['size'] > $attachtype['maxsize']*1024 && $attachtype['maxsize'] != "")
+        {
+            $ret['error'] = $lang->sprintf($lang->error_attachsize, $attachtype['maxsize']);
+            return $ret;
+        }
+
+        // Double check attachment space usage
+        if($mybb->usergroup['attachquota'] > 0)
+        {
+            $query = $db->simple_select("attachments", "SUM(filesize) AS ausage", "uid='".$data['uid']."'");
+            $usage = $db->fetch_array($query);
+            $usage = $usage['ausage']+$attachment['size'];
+            if($usage > ($mybb->usergroup['attachquota']*1024))
+            {
+                $friendlyquota = get_friendly_size($mybb->usergroup['attachquota']*1024);
+                $ret['error'] = $lang->sprintf($lang->error_reachedattachquota, $friendlyquota);
+                return $ret;
+            }
+        }
+
+        // Gather forum permissions
+        $forumpermissions = forum_permissions($forum['fid']);
+
+        // Check if an attachment with this name is already in the post
+        $query = $db->simple_select("attachments", "*", "filename='".$db->escape_string($attachment['name'])."' AND (posthash='$posthash' OR (pid='".intval($pid)."' AND pid!='0'))");
+        $prevattach = $db->fetch_array($query);
+        if($prevattach['aid'] && $update_attachment == false)
+        {
+            if(!$mybb->usergroup['caneditattachments'] && !$forumpermissions['caneditattachments'])
+            {
+                $ret['error'] = $lang->error_alreadyuploaded_perm;
+                return $ret;
+            }
+
+            $ret['error'] = $lang->error_alreadyuploaded;
+            return $ret;
+        }
+
+        $month_dir = '';
+        if(ini_get('safe_mode') != 1 && strtolower(ini_get('safe_mode')) != 'on')
+        {
+            // Check if the attachment directory (YYYYMM) exists, if not, create it
+            $month_dir = gmdate("Ym");
+            if(!@is_dir(MYBB_ROOT."uploads"."/".$month_dir))
+            {
+                @mkdir(MYBB_ROOT."uploads"."/".$month_dir);
+                // Still doesn't exist - oh well, throw it in the main directory
+                if(!@is_dir(MYBB_ROOT."uploads"."/".$month_dir))
+                {
+                    $month_dir = '';
+                }
+            }
+        }
+
+        // All seems to be good, lets move the attachment!
+        $filename = "post_".$data['uid']."_".TIME_NOW."_".md5(random_str()).".attach";
+
+        $file = upload_file($attachment,  MYBB_ROOT ."/uploads/".$month_dir, $filename);
+
+        // Failed to create the attachment in the monthly directory, just throw it in the main directory
+        if($file['error'] && $month_dir)
+        {
+            $file = upload_file($attachment, MYBB_ROOT ."/uploads/", $filename);
+        }
+
+        if($month_dir)
+        {
+            $filename = $month_dir."/".$filename;
+        }
+
+        if($file['error'])
+        {
+            $ret['error'] = $lang->error_uploadfailed.$lang->error_uploadfailed_detail;
+            switch($file['error'])
+            {
+                case 1:
+                    $ret['error'] .= $lang->error_uploadfailed_nothingtomove;
+                    break;
+                case 2:
+                    $ret['error'] .= $lang->error_uploadfailed_movefailed;
+                    break;
+            }
+            return $ret;
+        }
+
+        // Lets just double check that it exists
+        if(!file_exists(MYBB_ROOT."uploads"."/".$filename))
+        {
+            $ret['error'] = $lang->error_uploadfailed.$lang->error_uploadfailed_detail.$lang->error_uploadfailed_lost;
+            return $ret;
+        }
+
+        // Generate the array for the insert_query
+        $attacharray = array(
+            "pid" => intval($pid),
+            "posthash" => $posthash,
+            "uid" => $data['uid'],
+            "filename" => $db->escape_string($file['original_filename']),
+            "filetype" => $db->escape_string($file['type']),
+            "filesize" => intval($file['size']),
+            "attachname" => $filename,
+            "downloads" => 0,
+            "dateuploaded" => TIME_NOW
+        );
+
+        // If we're uploading an image, check the MIME type compared to the image type and attempt to generate a thumbnail
+        if($ext == "gif" || $ext == "png" || $ext == "jpg" || $ext == "jpeg" || $ext == "jpe")
+        {
+            // Check a list of known MIME types to establish what kind of image we're uploading
+            switch(my_strtolower($file['type']))
+            {
+                case "image/gif":
+                    $img_type =  1;
+                    break;
+                case "image/jpeg":
+                case "image/x-jpg":
+                case "image/x-jpeg":
+                case "image/pjpeg":
+                case "image/jpg":
+                    $img_type = 2;
+                    break;
+                case "image/png":
+                case "image/x-png":
+                    $img_type = 3;
+                    break;
+                default:
+                    $img_type = 0;
+            }
+
+            $supported_mimes = array();
+            $attachtypes = $cache->read("attachtypes");
+            foreach($attachtypes as $attachtype)
+            {
+                if(!empty($attachtype['mimetype']))
+                {
+                    $supported_mimes[] = $attachtype['mimetype'];
+                }
+            }
+
+            // Check if the uploaded file type matches the correct image type (returned by getimagesize)
+            $img_dimensions = @getimagesize(MYBB_ROOT."uploads/".$filename);
+
+            $mime = "";
+            $file_path = "uploads/".$filename;
+            if(function_exists("finfo_open"))
+            {
+                $file_info = finfo_open(FILEINFO_MIME);
+                list($mime, ) = explode(';', finfo_file($file_info, MYBB_ROOT.$file_path), 1);
+                finfo_close($file_info);
+            }
+            else if(function_exists("mime_content_type"))
+            {
+                $mime = mime_content_type(MYBB_ROOT.$file_path);
+            }
+
+            if(!is_array($img_dimensions) || ($img_dimensions[2] != $img_type && !in_array($mime, $supported_mimes)))
+            {
+                @unlink(MYBB_ROOT."uploads"."/".$filename);
+                $ret['error'] = $lang->error_uploadfailed.print_r($img_dimensions,true)." ".$mime." ".$img_type;
+                return $ret;
+            }
+            require_once MYBB_ROOT."inc/functions_image.php";
+            $thumbname = str_replace(".attach", "_thumb.$ext", $filename);
+            $thumbnail = generate_thumbnail(MYBB_ROOT."uploads/".$filename, MYBB_ROOT."uploads/", $thumbname, 91, 96);
+
+            if($thumbnail['filename'])
+            {
+                $attacharray['thumbnail'] = $thumbnail['filename'];
+            }
+            elseif($thumbnail['code'] == 4)
+            {
+                $attacharray['thumbnail'] = "SMALL";
+            }
+        }
+        if($forum['modattachments'] == 1 && !is_moderator($forum['fid'], "", $data['uid']))
+        {
+            $attacharray['visible'] = 0;
+        }
+        else
+        {
+            $attacharray['visible'] = 1;
+        }
+
+        $attacharray = $plugins->run_hooks("upload_attachment_do_insert", $attacharray);
+
+        if($prevattach['aid'] && $update_attachment == true)
+        {
+            unset($attacharray['downloads']); // Keep our download count if we're updating an attachment
+            $db->update_query("attachments", $attacharray, "aid='".$db->escape_string($prevattach['aid'])."'");
+            $aid = $prevattach['aid'];
+        }
+        else
+        {
+            $aid = $db->insert_query("attachments", $attacharray);
+        }
+
+        if($tid)
+        {
+            update_thread_counters($tid, array("attachmentcount" => "+1"));
+        }
+        $ret['aid'] = $aid;
+        return $ret;
+    }
+
     /**
      * Insert a new user into Database
      *
@@ -2111,7 +2409,7 @@ class MyBBIntegrator
          * If we have had more than 3 login attemps a captcha is shown in MyBB
          * Maybe provide the same functionality in MyBBIntegrator ?
          */
-        if ($loginattempts > 3 || intval($mybb->cookies['loginattempts']) > 3) {
+        if ($loginattempts > 3 || intval($this->$mybb->cookies['loginattempts']) > 3) {
             // Captcha input is given, let's validate the captcha and see if we can login
             if (!empty($captcha_hash) && !empty($captcha_string)) {
                 if (!$this->validateCaptcha($captcha_hash, $captcha_string) || $bad_login === true) {

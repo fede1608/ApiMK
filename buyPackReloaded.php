@@ -26,7 +26,6 @@ DB::$password = Config::$passDB;
 DB::$dbName = Config::$DBinvsql;
 
 require_once 'MyBBIntegrator.php';
-$archivo = fopen("../Logs/MobileShopLogs.txt", "a");
 date_default_timezone_set("America/Argentina/Buenos_Aires");
 
 $MyBBI = new MyBBIntegrator($mybb, $db, $cache, $plugins, $lang, $config);
@@ -74,8 +73,8 @@ if (isset($_POST['user']) && isset($_POST['pass']) && isset($_POST['id'])) {
                 } else {
                     $msgExit = "No tienes Suficiente Dinero.";
                 };
-                $logger->info("[MOBILE] -Id venta: " . $_GET['id'] .
-                    " -PackName: " . $pack->name . " -User: " . $mybb->user['username'] .
+                $logger->info("[MOBILE] -Id venta: " . $id .
+                    " -PackName: " . $pack->name . " -User: " . $user  .
                     " -Estado: " . $estado . " -DineroPrevio:" . $money . " -Precio: " . $pack->getPrice());
             } else
                 $msgExit = "No se ha acreditado el Pack! Debes desloggear tu cuenta del juego para poder comprar.";

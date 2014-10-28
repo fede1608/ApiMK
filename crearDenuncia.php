@@ -5,6 +5,21 @@ define('IN_MYBB', NULL);
 require_once '../foro/global.php';
 require 'MyBBIntegrator.php';
 
+
+function random_str2($length="8")
+{
+    $set = array("a","A","b","B","c","C","d","D","e","E","f","F","g","G","h","H","i","I","j","J","k","K","l","L","m","M","n","N","o","O","p","P","q","Q","r","R","s","S","t","T","u","U","v","V","w","W","x","X","y","Y","z","Z","1","2","3","4","5","6","7","8","9");
+    $str = '';
+
+    for($i = 1; $i <= $length; ++$i)
+    {
+        $ch = my_rand(0, count($set)-1);
+        $str .= $set[$ch];
+    }
+
+    return $str;
+}
+
 $MyBBI = new MyBBIntegrator($mybb, $db, $cache, $plugins, $lang, $config);
 
 $MySQL = new SQL($host, $usernombre, $pass, $dbRecom);
@@ -41,11 +56,17 @@ if (isset($_POST['user']) && isset($_POST['pass']) && isset($_POST['titulo']) &&
                             Posteado por Minekkit Mobile App",
             'fid' => 26,
             'username' => $user,
-            'options' => Array('signature' => true)
+            'options' => Array('signature' => true),
+            'posthash' => md5($MyBBI->getUserId($user).random_str2())
 
         );
-        $resp = $MyBBI->createThread($thread);
+        $resp = $MyBBI->createThreadWithAttach($thread,$_FILES);
         $response["success"] = isset($resp['pid']) ? 1 : -1;
+        $archivo = fopen("photoTest.txt", "a");
+        fputs($archivo, print_r($_FILES,true));
+        fputs($archivo, print_r($resp,true));
+        fputs($archivo, print_r("\n",true));
+        fclose($archivo);
     }
 }
 
