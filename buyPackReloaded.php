@@ -1,33 +1,10 @@
 <?php
 
-error_reporting(-1);
-ini_set('display_errors', 'On');
-define('IN_MYBB', null);
-define('ROOT_PATH',"/var/zpanel/hostdata/zadmin/public_html/minekkit_com/");
-
-require_once ROOT_PATH.'recompensas/libs/config.inc.php';
-require_once Config::$Root_Path.'foro/global.php';
-require_once Config::$Root_Path.'recompensas/libs/items.php';
-require_once Config::$Root_Path.'recompensas/libs/meekrodb.2.2.class.php';
-require_once Config::$Root_Path.'recompensas/class/ItemsPack.php';
-require_once Config::$Root_Path.'recompensas/class/Item.php';
-require_once Config::$Root_Path.'recompensas/class/RandomSet.php';
-require_once Config::$Root_Path.'recompensas/class/RandomSword.php';
-require_once Config::$Root_Path.'recompensas/class/RandomSetCuero.php';
-require_once Config::$Root_Path.'recompensas/class/RandomBow.php';
-require_once Config::$Root_Path.'recompensas/class/Donador15Dias.php';
-require_once Config::$Root_Path.'recompensas/class/DonadorPlus15Dias.php';
-require_once Config::$Root_Path.'recompensas/class/DonadorPacks.php';
-require_once Config::$Root_Path.'recompensas/libs/MinecraftQuery.class.php';
-date_default_timezone_set("America/Argentina/Buenos_Aires");
-
-DB::$user = Config::$userDB;
-DB::$password = Config::$passDB;
-DB::$dbName = Config::$DBinvsql;
 
 require_once 'MyBBIntegrator.php';
-date_default_timezone_set("America/Argentina/Buenos_Aires");
-
+require_once '../recompensas/header.php';
+require_once '../recompensas/functions.php';
+ini_set('display_errors', 'Off');
 $MyBBI = new MyBBIntegrator($mybb, $db, $cache, $plugins, $lang, $config);
 
 $price = 0;
@@ -38,7 +15,7 @@ $response["mensaje"]="";
 
 $msgExit = '';
 
-require_once '../recompensas/functions.php';
+
 
 if (isset($_POST['user']) && isset($_POST['pass']) && isset($_POST['id'])) {
     $user = $_POST['user'];

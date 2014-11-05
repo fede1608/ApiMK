@@ -7,7 +7,7 @@ require 'MyBBIntegrator.php';
 
 $MyBBI = new MyBBIntegrator($mybb, $db, $cache, $plugins, $lang, $config);
 //$MySQL = new SQL($host, $usernombre, $pass, $dbRecom);
-$version = "0.10Beta";
+$version = "0.11Beta";
 
 $response["success"] = 0;
 if (isset($_POST['user']) && isset($_POST['pass']) && isset($_POST['version'])) {

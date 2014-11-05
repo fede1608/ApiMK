@@ -35,7 +35,7 @@ if (isset($_POST['user']) && isset($_POST['pass']) && isset($_POST['titulo']) &&
         $hora = $_POST['horario'];
         $mundo = utf8_encode($_POST['mundo']);
         $ciudad = utf8_encode($_POST['ciudad']);
-        $tipo = $_POST['tipo'];
+        $tipo = utf8_encode($_POST['tipo']);
         $normas = utf8_encode($_POST['reglas']);
         $explicacion = utf8_encode($_POST['explicacion']);
         $solucion = utf8_encode($_POST['solucion']);
