@@ -59,7 +59,7 @@ if (isset($_POST['user']) && isset($_POST['pass']) && isset($_POST['action'])) {
                 if (($num >= 96) && ($num < 98)) $response["prize"] = 7;
                 if (($num >= 99) && ($num <= 100)) $response["prize"] = 2;
                 fputs($archivo, date(DATE_RFC822) . " MINEKKIT MOBILE APP Player: {$p} Prize: {$response["prize"]} Plas: {$prizes[$response["prize"]]} idPaygol: {$cupon[0]["idPaygol"]} \n");
-                $MySQL->execute("UPDATE roulette SET mobileUsed=1,prizeMobile={$response["prize"]} WHERE idPaygol={$cupon[0]["idPaygol"]}");
+                $MySQL->execute("UPDATE roulette SET mobileUsed=1,prizeMobile={$response["prize"]} WHERE idPaygol='{$cupon[0]["idPaygol"]}'");
                 $MySQL->execute("UPDATE foro.iConomy SET balance=balance+{$prizes[$resp]} WHERE username='{$p}'");
                 $response["success"] = 1;
             } else $response["success"] = -1;

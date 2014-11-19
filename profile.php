@@ -4,10 +4,9 @@ require 'inventorySQL/config.inc.php';
 define('IN_MYBB', NULL);
 require_once '../foro/global.php';
 require 'MyBBIntegrator.php';
-$dbMinekkit = "minekkit";
 
 $MyBBI = new MyBBIntegrator($mybb, $db, $cache, $plugins, $lang, $config);
-$MySQL = new SQL($host, $usernombre, $pass, $dbMinekkit);
+$MySQL = new SQL($host, $usernombre, $pass, $dbJobs);
 
 $response["success"] = 0;
 $response["recoplas"] = 0;
