@@ -22,13 +22,10 @@ if (isset($_POST['user']) && isset($_POST['pass'])) {
         $response["recoplas"] = $MyBBI->getMoney($user);
         $response["jobs"] = $MySQL->execute("SELECT * FROM jobsjobs WHERE username='" . $user . "'");
         $response["avatar"] = "http://minekkit.com/foro/" . $a['avatar'];
-        $response["success"] = 1; //todo: usar el return del metodo anterior para saber si se envio el mensaje
-
+        $response["success"] = 1;
     }
 }
 
-
 echo json_encode($response);
-
 
 ?>

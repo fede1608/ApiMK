@@ -1,4 +1,5 @@
 <?php
+const LIMIT = 50;
 require 'inventorySQL/mysql.inc.php';
 require 'inventorySQL/config.inc.php';
 define('IN_MYBB', null);
@@ -6,7 +7,6 @@ require_once '../foro/global.php';
 require 'MyBBIntegrator.php';
 
 $MyBBI = new MyBBIntegrator($mybb, $db, $cache, $plugins, $lang, $config);
-//$MySQL = new SQL($host, $usernombre, $pass, $dbRecom);
 
 $response["success"] = 0;
 if (isset($_POST['user']) && isset($_POST['pass'])) {
@@ -23,30 +23,26 @@ if (isset($_POST['user']) && isset($_POST['pass'])) {
             $arrpm[0]["content"] = $pm[0]['message'];
             $arrpm[0]["read"] = $pm[0]['status'] > 0 ? 1 : 0;
             $response["pms"] = $arrpm;
-
         } else {
             $pms = $MyBBI->getPrivateMessagesOfUser($MyBBI->getUserId($user));
             $response["success"] = 1;
             $c = 0;
             foreach ($pms['Bandeja de entrada'] as $pm) {
+                if (isset($_GET['read']) && $_GET['read'] == 1 && $pm['status'] > 0)
+                    break;
                 $arrpm[$c]["title"] = $pm['subject'];
                 $arrpm[$c]["from"] = $pm['fromusername'];
                 $arrpm[$c]["pmid"] = $pm['pmid'];
                 $arrpm[$c]["date"] = $pm['dateline'];
                 $arrpm[$c]["read"] = $pm['status'] > 0 ? 1 : 0;
                 $c++;
-                if ($c >= 50)
+                if ($c >= LIMIT)
                     break;
             }
             $response["pms"] = $arrpm;
-            //print_r($pms);
         }
     }
-
-
 }
-
-
 echo json_encode($response);
 
 
