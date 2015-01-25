@@ -19,9 +19,12 @@ if (isset($_POST['user']) && isset($_POST['pass'])) {
 
     if ($MyBBI->checkUserPass($user, $pass)) {
         $a = $MyBBI->getUser($MyBBI->getUserId($user));
+        $response['email'] = $a['email'];
+        $response['user'] = $user;
+        $response['userId'] = $MyBBI->getUserId($user);
         $response["recoplas"] = $MyBBI->getMoney($user);
-        $response["jobs"] = $MySQL->execute("SELECT * FROM jobsjobs WHERE username='" . $user . "'");
         $response["avatar"] = "http://minekkit.com/foro/" . $a['avatar'];
+        $response["jobs"] = $MySQL->execute("SELECT * FROM jobsjobs WHERE username='" . $user . "'");
         $response["success"] = 1;
     }
 }

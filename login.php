@@ -13,10 +13,14 @@ $response["success"] = 0;
 if (isset($_POST['user']) && isset($_POST['pass']) && isset($_POST['version'])) {
     $user = $_POST['user'];
     $pass = $_POST['pass'];
-    if ($_POST['version'] != $version)
+    if (false && $_POST['version'] != $version)
         $response["success"] = -1;
-    else
+    else {
+        $a = $MyBBI->getUser($MyBBI->getUserId($user));
+        $response["recoplas"] = $MyBBI->getMoney($user);
+        $response["avatar"] = "http://minekkit.com/foro/" . $a['avatar'];
         $response["success"] = $MyBBI->checkUserPass($user, $pass) ? 1 : 0;
+    }
 } else {
     $response["success"] = 0;
 }
