@@ -26,6 +26,12 @@ if (isset($_POST['user']) && isset($_POST['pass'])) {
         $response["avatar"] = "http://minekkit.com/foro/" . $a['avatar'];
         $response["jobs"] = $MySQL->execute("SELECT * FROM jobsjobs WHERE username='" . $user . "'");
         $response["success"] = 1;
+    } else {
+        $a = $MyBBI->getUser($MyBBI->getUserId($user));
+        $response['user'] = $user;
+        $response['userId'] = $MyBBI->getUserId($user);
+        $response["avatar"] = "http://minekkit.com/foro/" . $a['avatar'];
+        $response["success"] = 1;
     }
 }
 
