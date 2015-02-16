@@ -2086,7 +2086,7 @@ class MyBBIntegrator
 			SELECT COUNT(*) as cant
 			FROM ' . TABLE_PREFIX . 'users u 
 			WHERE u.`username` = "' . $username . '" 
-            AND u.money >50
+            AND ((u.money >50 AND NOT u.usergroup = 23) OR (u.money>60 AND u.usergroup=23))
             
 		');
         $user = $this->db->fetch_array($query);
