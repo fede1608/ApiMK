@@ -10,7 +10,7 @@ DB::$user = $usernombre;
 DB::$password = $pass;
 DB::$dbName = "economia";
 
-$totalExpected = 1200;
+$totalExpected = 1500;
 
 $result = DB::query(' SELECT SUM( CASE  WHEN `currency` = 0 THEN `valor` WHEN `currency`=1 THEN valor*10  END ) AS suma FROM donaciones WHERE (descripcion like "%Donador%" OR descripcion like "%Recoplas%")AND `fecha` >= UNIX_TIMESTAMP((LAST_DAY(NOW())+INTERVAL 1 DAY)-INTERVAL 1 MONTH)
   AND `fecha` <  UNIX_TIMESTAMP(LAST_DAY(NOW())+INTERVAL 1 DAY) ');
@@ -34,6 +34,7 @@ GROUP BY player
 ORDER BY 2 DESC
 LIMIT 1', $dbTooth);
 $exit['donated'] = $result[0]['suma'] / $totalExpected * 100;
+$exit['donated'] = $exit['donated'] > 100 ? 100 : $exit['donated'];
 $exit['donated'] = sprintf('%0.2f', $exit['donated']) * 1;
 
 $a = $MyBBI->getUser($MyBBI->getUserId($topDonador[0]['player']));

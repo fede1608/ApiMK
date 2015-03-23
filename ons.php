@@ -24,6 +24,7 @@ $server['HungerGames'] = 25570;
 $server['Skywars'] = 25571;
 $server['Hub'] = 25572;
 $server['EDLB'] = 25573;
+$server2['Skyblock'] = 25575;
 $status = new MinecraftServerStatus(); // call the class
 $response["success"] = 1;
 
@@ -38,8 +39,18 @@ foreach ($server as $sv => $port) {
     } catch (Exception $ex) {
         $players[$sv] = 0;
     }
-
 }
+foreach ($server2 as $sv => $port) {
+    try {
+        $Query = new MinecraftQuery();
+        $Query->Connect("h5.linekkit.com", $port);
+        $info = $Query->GetInfo();
+        $players[$sv] = $info['Players'];
+    } catch (Exception $ex) {
+        $players[$sv] = 0;
+    }
+}
+
 $response["servers"] = $players;
 
 /*foreach($competencia as $name => $sv){
