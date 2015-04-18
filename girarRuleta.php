@@ -60,7 +60,9 @@ if (isset($_POST['user']) && isset($_POST['pass']) && isset($_POST['action'])) {
                 if (($num >= 99) && ($num <= 100)) $response["prize"] = 2;
                 fputs($archivo, date(DATE_RFC822) . " MINEKKIT MOBILE APP Player: {$p} Prize: {$response["prize"]} Plas: {$prizes[$response["prize"]]} idPaygol: {$cupon[0]["idPaygol"]} \n");
                 $MySQL->execute("UPDATE roulette SET mobileUsed=1,prizeMobile={$response["prize"]} WHERE idPaygol='{$cupon[0]["idPaygol"]}'");
-                $MySQL->execute("UPDATE minekkit_iconomy.iconomy SET balance=balance+{$prizes[$resp]} WHERE username='{$p}'");
+                //$MySQL->execute("UPDATE minekkit_iconomy.iconomy SET balance=balance+{$prizes[$resp]} WHERE username='{$p}'");
+                $MySQL->execute("UPDATE minekkit_principal18.economy_balance SET balance=balance + {$prizes[$resp]} WHERE username_id= (SELECT a.id FROM minekkit_principal18.economy_account a WHERE name='{$p}') ");
+
                 $response["success"] = 1;
             } else $response["success"] = -1;
             fclose($archivo);
