@@ -7,7 +7,7 @@ $MySQL = new SQL($host, $usernombre, $pass, $dbRecom);
 
 if (isset($_GET['id'])) {
     $id = make_safe($_GET['id']);
-    $items = $MySQL->execute("SELECT id as Id, packName as Nombre,imgPath as Logo,cost as Costo, descripcion as Descripcion FROM infoPack WHERE id=" .
+    $items = $MySQL->execute("SELECT id as Id, packName as Nombre,imgPath as Logo,cost as Costo, descripcion as Descripcion FROM infoPack WHERE server='PRINCIPAL' AND id=" .
         $id);
 } else {
     $types = array(
@@ -17,7 +17,7 @@ if (isset($_GET['id'])) {
         4);
     //Otros
     foreach ($types as $type) {
-        $items[$type] = $MySQL->execute("SELECT id as Id, packName as Nombre,imgPath as Logo,cost as Costo, descripcion as Descripcion FROM infoPack WHERE type=" .
+        $items[$type] = $MySQL->execute("SELECT id as Id, packName as Nombre,imgPath as Logo,cost as Costo, descripcion as Descripcion FROM infoPack WHERE server='PRINCIPAL' AND type=" .
             $type);
     }
 }
